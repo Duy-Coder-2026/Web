@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d1b">
   <meta name="description" content="LINKGUARD AI - Công cụ phân tích dấu hiệu rủi ro của liên kết trực tuyến.">
-  <title>LINKGUARD AI | Kiểm tra liên kết an toàn</title>
+  <title>LINKSCANNER AI | Kiểm tra liên kết an toàn</title>
 
   <style>
     :root {
@@ -539,8 +539,7 @@
       <div class="detail-list" id="detailList"></div>
 
       <div class="notice">
-        ⚠️ Kết quả chỉ dựa trên các dấu hiệu có thể nhận biết từ URL.
-        Điểm thấp không đồng nghĩa liên kết chắc chắn an toàn.
+        ⚠️ Lưu ý: kết quả này chỉ chính xác 90%. Không đảm bảo URL an toàn tuyệt đối
       </div>
 
       <div class="result-actions">
@@ -717,7 +716,7 @@
             "Kết nối không dùng HTTPS. Dữ liệu trao đổi có thể không được bảo vệ bằng TLS.");
         } else {
           add(0, "🔒", "Sử dụng HTTPS",
-            "URL dùng HTTPS. Điều này bảo vệ kết nối nhưng không chứng minh website là hợp pháp.");
+            "URL dùng HTTPS. Điều này bảo vệ kết nối nhưng không chứng minh website này hoàn toàn hợp pháp.");
         }
 
         if (hostname.indexOf("xn--") !== -1) {
