@@ -442,7 +442,7 @@ function analyzeUrl(value) {
     label,
     color,
     findings,
-    summary: "Đã kiểm tra cấu trúc URL bằng các quy tắc cục bộ. Đây không phải kết quả từ AI hoặc cơ sở dữ liệu mã độc. Điểm số không phải xác suất URL nguy hiểm."
+    summary: "Đã kiểm tra cấu trúc URL!."
   };
 }
 
@@ -493,13 +493,13 @@ $("#scanForm").addEventListener("submit", event => {
 
   const button = $("#scanButton");
   button.disabled = true;
-  button.textContent = "Đang phân tích...";
+  button.textContent = "Đang kiểm tra...";
   hideStatus($("#scanStatus"));
 
   try {
     const report = analyzeUrl($("#urlInput").value.trim());
     renderResult(report);
-    showStatus($("#scanStatus"), "Hoàn tất. Đây là phân tích theo quy tắc, không phải kết luận an toàn.", "success");
+    showStatus($("#scanStatus"), "Kiểm tra hoàn tất - Complete.", "success");
     $("#resultPanel").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     showStatus($("#scanStatus"), error.message || "Không thể phân tích URL.", "error");
