@@ -1,4 +1,1210 @@
-      on("reviewForm", "submit", function (event) {
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d1b">
+  <meta name="description" content="LINKGUARD AI - Công cụ phân tích dấu hiệu rủi ro của liên kết trực tuyến.">
+  <title>LINKGUARD AI | Phân tích rủi ro liên kết</title>
+
+  <style>
+    :root {
+      --bg: #080d1b;
+      --panel: #10182b;
+      --panel2: #141f35;
+      --border: #26344f;
+      --text: #edf3ff;
+      --muted: #9cabc4;
+      --blue: #65a7ff;
+      --cyan: #5eead4;
+      --red: #ff657c;
+      --yellow: #ffca68;
+      --green: #5ce1a0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at top left, #17274b 0, transparent 45%),
+        radial-gradient(ellipse at top right, #102b35 0, transparent 35%),
+        var(--bg);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .container {
+      width: min(1050px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    header {
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(156, 171, 196, .13);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      font-size: 21px;
+      letter-spacing: .5px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #367dff, #45dfce);
+      color: #071323;
+      font-size: 22px;
+      box-shadow: 0 5px 25px #3987ff35;
+    }
+
+    .version {
+      color: var(--cyan);
+      border: 1px solid #5eead43c;
+      background: #5eead40c;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    main { padding: 48px 0 60px; }
+
+    .hero {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 32px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 5px 12px;
+      border: 1px solid #65a7ff45;
+      border-radius: 30px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+
+    h1 {
+      margin: 17px 0 12px;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.12;
+      letter-spacing: -1.8px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #75aaff, #5eead4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin: 0 auto;
+      max-width: 650px;
+      font-size: 15px;
+    }
+
+    .panel {
+      background: linear-gradient(145deg, #121c31f5, #0e1628f5);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 70px #00000020;
+      margin-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 5px;
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .url-input {
+      min-width: 0;
+      flex: 1;
+      padding: 15px 16px;
+      color: var(--text);
+      background: #080f20;
+      border: 1px solid #33435f;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .url-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px #65a7ff18;
+    }
+
+    .url-input::placeholder { color: #72819b; }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 19px;
+      font-weight: 800;
+      transition: transform .15s, opacity .15s;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .55; cursor: wait; transform: none; }
+
+    .btn-primary {
+      color: #071323;
+      background: linear-gradient(135deg, #79b0ff, #5eead4);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: #1b2942;
+      border: 1px solid #344663;
+    }
+
+    .btn-danger {
+      color: #ff9aaa;
+      background: #ff657c12;
+      border: 1px solid #ff657c45;
+    }
+
+    .domain-library {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .domain-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #344663;
+      border-radius: 9px;
+      background: #0b1324;
+      color: #c3d5f4;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .domain-chip strong { color: var(--cyan); }
+
+    .examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .example-btn {
+      border: 1px solid #344663;
+      background: #16223a;
+      color: #c3d5f4;
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-size: 12px;
+    }
+
+    .example-btn:hover { border-color: var(--blue); }
+
+    .status {
+      margin-top: 12px;
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .result { display: none; }
+    .result.show { display: block; }
+
+    .result-top {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .score-circle {
+      --score-color: var(--green);
+      width: 135px;
+      height: 135px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      background: conic-gradient(
+        var(--score-color) var(--progress, 0deg),
+        #29364d 0deg
+      );
+      margin: auto;
+    }
+
+    .score-circle::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      background: #111a2d;
+    }
+
+    .score-inner {
+      z-index: 1;
+      text-align: center;
+    }
+
+    .score-number {
+      font-size: 39px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .score-caption {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .risk-label {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-weight: 850;
+      font-size: 12px;
+      background: #5ce1a018;
+      color: var(--green);
+    }
+
+    .result-heading {
+      margin: 10px 0 6px;
+      font-size: 23px;
+      line-height: 1.3;
+    }
+
+    .result-description { color: var(--muted); margin: 0; }
+
+    .checked-url {
+      overflow-wrap: anywhere;
+      background: #080f20;
+      border: 1px solid #283750;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-top: 18px;
+    }
+
+    .section-heading {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 22px 0 10px;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      background: #0b1324;
+      border: 1px solid #24334b;
+      border-radius: 10px;
+    }
+
+    .detail-icon {
+      font-size: 17px;
+      flex: 0 0 22px;
+    }
+
+    .detail-item strong { display: block; font-size: 13px; }
+    .detail-item p { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .notice {
+      padding: 13px 15px;
+      border: 1px solid #ffca6845;
+      background: #ffca680c;
+      color: #e8d4a6;
+      border-radius: 11px;
+      font-size: 13px;
+      margin-top: 18px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 22px 0;
+    }
+
+    .feature {
+      padding: 20px;
+      border-radius: 15px;
+      background: #111a2cbd;
+      border: 1px solid var(--border);
+    }
+
+    .feature-icon { font-size: 24px; }
+
+    .feature h3 {
+      margin: 9px 0 5px;
+      font-size: 15px;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .review-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .field {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #33435f;
+      background: #080f20;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field:focus { border-color: var(--blue); }
+
+    textarea.field {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    .review-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .review {
+      background: #0b1324;
+      border: 1px solid #283750;
+      border-radius: 11px;
+      padding: 14px;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stars { color: var(--yellow); letter-spacing: 2px; }
+    .review p { margin: 8px 0 0; color: #c2cde0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid #26344f;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-brand {
+      font-weight: 850;
+      color: #dbe8ff;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 650px) {
+      main { padding-top: 32px; }
+      .input-row { flex-direction: column; }
+      .input-row .btn { width: 100%; }
+      .result-top { grid-template-columns: 1fr; text-align: center; }
+      .features { grid-template-columns: 1fr; }
+      .panel { padding: 18px; }
+      h1 { letter-spacing: -1px; }
+      .brand { font-size: 17px; }
+      .version { font-size: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🛡</div>
+        <span>LINKGUARD <span class="gradient">AI</span></span>
+      </div>
+      <span class="version">WEB SECURITY TOOL</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">SMART LINK ANALYSIS</span>
+      <h1>Bảo vệ bạn trước <span class="gradient">liên kết nguy hiểm</span></h1>
+      <p>
+        Phân tích các dấu hiệu đáng ngờ của URL để giúp bạn thận trọng hơn
+        trước khi truy cập các liên kết trên Internet.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="scannerTitle">
+      <h2 class="panel-title" id="scannerTitle">🔎 Kiểm tra liên kết</h2>
+      <p class="muted small">
+        Nhập hoặc dán URL cần kiểm tra. Công cụ phân tích chuỗi URL ngay trên trình duyệt.
+      </p>
+
+      <form id="scanForm">
+        <div class="input-row">
+          <input
+            class="url-input"
+            id="urlInput"
+            type="text"
+            inputmode="url"
+            autocomplete="url"
+            placeholder="Ví dụ: https://example.com"
+            aria-label="Địa chỉ liên kết cần kiểm tra"
+            required
+          >
+          <button class="btn btn-primary" id="scanButton" type="submit">
+            Phân tích URL →
+          </button>
+        </div>
+      </form>
+
+      <div class="examples">
+        <span class="muted small">Thử nhanh:</span>
+        <button class="example-btn" type="button" data-example="https://example.com">URL mẫu</button>
+        <button class="example-btn" type="button" data-example="http://example.com">HTTP</button>
+        <button class="example-btn" type="button" data-example="https://example.com/login?redirect=http://192.0.2.1">URL có tham số</button>
+      </div>
+
+      <div class="status" id="scanStatus" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="domainLibraryTitle">
+      <h2 class="panel-title" id="domainLibraryTitle">📚 Thư viện tên miền chính danh</h2>
+      <p class="muted small">
+        Danh sách tham khảo tích hợp sẵn để đối chiếu tên miền. Danh sách chưa đầy đủ và cần được cập nhật, xác minh định kỳ.
+      </p>
+      <div class="domain-library" id="domainLibraryList" aria-label="Danh sách tên miền tham khảo"></div>
+      <p class="muted small" style="margin-bottom:0">
+        Tên miền khớp danh sách không bảo đảm mọi trang con an toàn; tên miền chưa có trong danh sách cũng không đồng nghĩa là độc hại.
+      </p>
+    </section>
+
+    <section class="panel result" id="resultPanel" aria-labelledby="resultTitle">
+      <div class="result-top">
+        <div class="score-circle" id="scoreCircle">
+          <div class="score-inner">
+            <div class="score-number" id="score">0</div>
+            <div class="score-caption">ĐIỂM RỦI RO / 100</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="risk-label" id="riskTag">CHƯA ĐÁNH GIÁ</span>
+          <h2 class="result-heading" id="resultTitle">Kết quả phân tích</h2>
+          <p class="result-description" id="resultSummary"></p>
+        </div>
+      </div>
+
+      <div class="checked-url">
+        <strong>URL được kiểm tra:</strong>
+        <div id="checkedUrl" style="overflow-wrap:anywhere;margin-top:5px"></div>
+      </div>
+
+      <h3 class="section-heading">Chi tiết phân tích</h3>
+      <div class="detail-list" id="detailList"></div>
+
+      <div class="notice">
+        ⚠️ Lưu ý: đây là phân tích heuristic cục bộ và thư viện tên miền tham khảo, không phải hệ thống xác minh nội dung trực tiếp. Không thể cam kết phát hiện mọi URL độc hại.
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-primary" id="copyReport" type="button">Sao chép báo cáo</button>
+        <button class="btn btn-secondary" id="clearResult" type="button">Xóa kết quả</button>
+      </div>
+    </section>
+
+    <section class="features" aria-label="Tính năng">
+      <article class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>Phân tích URL</h3>
+        <p>Kiểm tra cấu trúc địa chỉ, giao thức, tên miền và các dấu hiệu đáng ngờ.</p>
+      </article>
+      <article class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Phản hồi nhanh</h3>
+        <p>Phân tích cấu trúc URL và đối chiếu thư viện tên miền tham khảo ngay trong trình duyệt.</p>
+      </article>
+      <article class="feature">
+        <div class="feature-icon">🔐</div>
+        <h3>Ưu tiên riêng tư</h3>
+        <p>Phiên bản này không tự mở URL và không gửi URL đến máy chủ bên ngoài.</p>
+      </article>
+    </section>
+
+    <section class="panel" aria-labelledby="reviewTitle">
+      <h2 class="panel-title" id="reviewTitle">💬 Đánh giá LINKGUARD AI</h2>
+      <p class="muted small">Chia sẻ nhận xét của bạn về công cụ.</p>
+
+      <form class="review-form" id="reviewForm">
+        <div>
+          <label class="field-label" for="reviewName">Tên hiển thị</label>
+          <input class="field" id="reviewName" maxlength="40" placeholder="Tên của bạn">
+        </div>
+
+        <div>
+          <label class="field-label" for="reviewRating">Mức đánh giá</label>
+          <select class="field" id="reviewRating">
+            <option value="5">★★★★★ — Rất tốt</option>
+            <option value="4">★★★★☆ — Tốt</option>
+            <option value="3">★★★☆☆ — Bình thường</option>
+            <option value="2">★★☆☆☆ — Cần cải thiện</option>
+            <option value="1">★☆☆☆☆ — Chưa tốt</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label" for="reviewText">Nội dung đánh giá</label>
+          <textarea class="field" id="reviewText" maxlength="500" placeholder="Bạn nghĩ gì về công cụ?"></textarea>
+        </div>
+
+        <div>
+          <button class="btn btn-primary" type="submit">Gửi đánh giá</button>
+        </div>
+      </form>
+
+      <div class="review-list" id="reviewList"></div>
+      <p class="muted small" id="reviewStatus" role="status" aria-live="polite"></p>
+
+      <button class="btn btn-danger" id="clearReviews" type="button" style="margin-top:14px">
+        Xóa đánh giá trên thiết bị này
+      </button>
+      <p class="muted small">
+        Đánh giá được lưu trong trình duyệt hiện tại; chưa có cơ sở dữ liệu chung giữa nhiều người dùng.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-brand">LINKGUARD AI</div>
+      <div>Trình phân tích URL và đối chiếu tên miền tham khảo</div>
+      <div style="margin-top:5px">Made by Anh Duy 9A2 TS · 2026</div>
+      <div style="margin-top:10px">Công cụ hỗ trợ tham khảo, không thay thế hệ thống phát hiện mã độc chuyên dụng.</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      function getElement(id) {
+        var element = document.getElementById(id);
+        if (!element) {
+          console.error("[LINKGUARD AI] Không tìm thấy phần tử HTML có id:", id);
+        }
+        return element;
+      }
+
+      function on(id, eventName, handler) {
+        var element = getElement(id);
+        if (element) element.addEventListener(eventName, handler);
+      }
+
+      function setText(id, value) {
+        var element = getElement(id);
+        if (element) element.textContent = String(value);
+      }
+
+      var lastReport = "";
+      var STORAGE_KEY = "linkguard_reviews_v1";
+
+      function normalizeUrl(raw) {
+        var value = raw.trim();
+
+        if (!value) {
+          throw new Error("Vui lòng nhập địa chỉ URL.");
+        }
+
+        if (/[\s\u0000-\u001f\u007f]/.test(value)) {
+          throw new Error("URL không được chứa khoảng trắng hoặc ký tự điều khiển.");
+        }
+
+        if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value)) {
+          value = "https://" + value;
+        }
+
+        var parsed;
+        try {
+          parsed = new URL(value);
+        } catch (error) {
+          throw new Error("URL không hợp lệ. Hãy kiểm tra lại địa chỉ.");
+        }
+
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          throw new Error("Chỉ hỗ trợ URL bắt đầu bằng http:// hoặc https://.");
+        }
+
+        if (!parsed.hostname || parsed.hostname.indexOf(".") === -1) {
+          if (parsed.hostname !== "localhost") {
+            throw new Error("Tên miền có vẻ chưa đầy đủ. Hãy nhập URL chính xác.");
+          }
+        }
+
+        if (parsed.username || parsed.password) {
+          throw new Error("URL chứa thông tin đăng nhập trước tên miền. Không nên tiếp tục sử dụng URL này.");
+        }
+
+        return parsed;
+      }
+
+      var officialDomains = [
+        { brand: "Google", domain: "google.com" },
+        { brand: "YouTube", domain: "youtube.com" },
+        { brand: "Microsoft", domain: "microsoft.com" },
+        { brand: "Apple", domain: "apple.com" },
+        { brand: "Facebook", domain: "facebook.com" },
+        { brand: "Instagram", domain: "instagram.com" },
+        { brand: "Wikipedia", domain: "wikipedia.org" },
+        { brand: "GitHub", domain: "github.com" },
+        { brand: "OpenAI", domain: "openai.com" },
+        { brand: "PayPal", domain: "paypal.com" },
+        { brand: "Amazon", domain: "amazon.com" },
+        { brand: "Netflix", domain: "netflix.com" },
+        { brand: "Zalo", domain: "zalo.me" },
+        { brand: "VnExpress", domain: "vnexpress.net" },
+        { brand: "Cổng Thông tin Chính phủ", domain: "chinhphu.vn" }
+      ];
+
+      function analyzeUrl(parsed) {
+        var findings = [];
+        var score = 0;
+        var hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+        var fullUrl = parsed.href.toLowerCase();
+        var pathAndQuery = (parsed.pathname + parsed.search + parsed.hash).toLowerCase();
+        var urlText = (hostname + " " + pathAndQuery).normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+        function add(points, icon, title, description) {
+          score += points;
+          findings.push({ icon: icon, title: title, description: description });
+        }
+
+        function getBaseDomain(host) {
+          var labels = host.split(".");
+          if (labels.length <= 2) return host;
+
+          var twoPartSuffixes = [
+            "com.vn", "net.vn", "org.vn", "gov.vn", "edu.vn",
+            "ac.vn", "co.uk", "org.uk", "com.au", "co.jp",
+            "com.br", "co.nz"
+          ];
+
+          var lastTwo = labels.slice(-2).join(".");
+          if (twoPartSuffixes.indexOf(lastTwo) !== -1 && labels.length >= 3) {
+            return labels.slice(-3).join(".");
+          }
+          return labels.slice(-2).join(".");
+        }
+
+        function editDistance(a, b) {
+          var previous = [];
+          var current = [];
+          var i, j;
+
+          for (j = 0; j <= b.length; j++) previous[j] = j;
+
+          for (i = 1; i <= a.length; i++) {
+            current[0] = i;
+
+            for (j = 1; j <= b.length; j++) {
+              current[j] = Math.min(
+                current[j - 1] + 1,
+                previous[j] + 1,
+                previous[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)
+              );
+            }
+
+            var temp = previous;
+            previous = current;
+            current = temp;
+          }
+
+          return previous[b.length];
+        }
+
+        if (parsed.protocol === "http:") {
+          add(12, "⚠️", "Sử dụng HTTP",
+            "Kết nối không dùng HTTPS. Đây là điểm cần thận trọng, nhưng riêng HTTP không chứng minh website độc hại.");
+        } else {
+          add(0, "🔒", "Sử dụng HTTPS",
+            "URL dùng HTTPS. Điều này bảo vệ kết nối nhưng không xác nhận nội dung hoặc chủ sở hữu website.");
+        }
+
+        if (hostname.indexOf("xn--") !== -1) {
+          add(22, "🌐", "Tên miền dùng Punycode",
+            "Tên miền có nhãn xn-- được mã hóa. Một số tên miền quốc tế hợp pháp cũng dùng dạng này; hãy kiểm tra kỹ ký tự hiển thị.");
+        }
+
+        if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
+          add(18, "🧭", "Dùng địa chỉ IPv4 trực tiếp",
+            "URL dùng địa chỉ IP thay vì tên miền thông thường. Đây là dấu hiệu cần xem xét, không phải bằng chứng độc hại.");
+        }
+
+        if (parsed.username || parsed.password) {
+          add(30, "🚨", "URL chứa thông tin trước tên miền",
+            "URL có thông tin đăng nhập trong phần user-info, có thể được dùng để đánh lừa người đọc về máy chủ thực tế.");
+        }
+
+        var shorteners = [
+          "bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly",
+          "rb.gy", "rebrand.ly", "ow.ly", "buff.ly", "shorturl.at"
+        ];
+
+        if (shorteners.indexOf(hostname) !== -1) {
+          add(12, "↗️", "Dịch vụ rút gọn URL",
+            "Đích đến thật có thể bị che khuất. Chỉ mở nếu bạn tin tưởng nguồn gửi và có thể xác minh đích đến.");
+        }
+
+        var suspiciousTlds = [
+          ".zip", ".mov", ".click", ".top", ".xyz",
+          ".work", ".country", ".gq", ".tk", ".rest"
+        ];
+
+        if (suspiciousTlds.some(function (tld) { return hostname.endsWith(tld); })) {
+          add(8, "🔎", "Đuôi tên miền cần xem xét",
+            "Đuôi tên miền này có thể xuất hiện trong các liên kết rủi ro, nhưng bản thân đuôi miền không đủ để kết luận độc hại.");
+        }
+
+        var categoryRules = [
+          {
+            label: "cá cược / cờ bạc",
+            regex: /(^|[^a-z0-9])(casino|betting|sportsbook|poker|slot[-_ ]?game|gambling|wager|ca[-_ ]?cuoc|caocuoc|so[-_ ]?de|xoc[-_ ]?dia|tai[-_ ]?xiu)([^a-z0-9]|$)/i
+          },
+          {
+            label: "nội dung người lớn",
+            regex: /(^|[^a-z0-9])(porn|xxx|adult[-_ ]?content|sex[-_ ]?video|webcam[-_ ]?sex|phim[-_ ]?sex|khiêu dâm|khieu dam|18plus)([^a-z0-9]|$)/i
+          },
+          {
+            label: "lừa đảo / giả mạo",
+            regex: /(^|[^a-z0-9])(phishing|scam|fraud|fake[-_ ]?login|steal[-_ ]?password|xac[-_ ]?minh[-_ ]?tai[-_ ]?khoan|nhan[-_ ]?qua|trung[-_ ]?thuong|claim[-_ ]?prize)([^a-z0-9]|$)/i
+          }
+        ];
+
+        categoryRules.forEach(function (rule) {
+          if (rule.regex.test(urlText)) {
+            add(18, "🚩", "Từ khóa có thể liên quan đến " + rule.label,
+              "URL có chứa mẫu từ khóa đáng chú ý. Từ khóa có thể xuất hiện trong nội dung hợp pháp hoặc bị nhúng để đánh lừa; cần kiểm tra thêm.");
+          }
+        });
+
+        var suspiciousWords = [
+          "login", "verify", "verification", "password", "signin",
+          "account", "secure", "update", "wallet", "banking",
+          "gift", "prize", "free", "claim", "urgent", "confirm",
+          "reset", "credential", "payment"
+        ];
+
+        var matchedWords = suspiciousWords.filter(function (word) {
+          return pathAndQuery.indexOf(word) !== -1;
+        });
+
+        if (matchedWords.length > 0) {
+          add(Math.min(16, matchedWords.length * 4), "🔑",
+            "Có từ khóa thường gặp trong URL lừa đảo",
+            "Phát hiện từ khóa: " + matchedWords.join(", ") +
+            ". Các từ này cũng có thể xuất hiện trên website hợp pháp; cần kiểm tra ngữ cảnh.");
+        }
+
+        if (hostname.split(".").length >= 5) {
+          add(8, "🧩", "Tên miền có nhiều cấp",
+            "Tên miền có nhiều cấp phụ. Hãy xác định tên miền đăng ký thực tế và không chỉ dựa vào phần đầu của địa chỉ.");
+        }
+
+        if (hostname.length > 45) {
+          add(8, "📏", "Tên miền dài bất thường",
+            "Tên miền dài có thể gây khó nhận diện hoặc được dùng để bắt chước tên miền khác.");
+        }
+
+        if (fullUrl.length > 180) {
+          add(4, "🧵", "URL rất dài",
+            "URL dài có thể chứa nhiều tham số khó đọc. Không chia sẻ URL có token hoặc mã phiên.");
+        }
+
+        if (parsed.search.length > 100) {
+          add(4, "🔗", "Chuỗi tham số dài",
+            "URL có chuỗi tham số dài. Không gửi URL chứa mã phiên, token hoặc thông tin riêng tư cho người khác.");
+        }
+              var baseDomain = getBaseDomain(hostname);
+        var exactMatch = null;
+        var possibleImpersonation = null;
+
+        officialDomains.forEach(function (entry) {
+          if (hostname === entry.domain || hostname.endsWith("." + entry.domain)) {
+            exactMatch = entry;
+            return;
+          }
+
+          var officialBase = getBaseDomain(entry.domain);
+          var baseLabel = baseDomain.split(".")[0];
+          var officialLabel = officialBase.split(".")[0];
+          var distance = editDistance(baseLabel, officialLabel);
+          var brandToken = entry.brand.toLowerCase().replace(/[^a-z0-9]/g, "");
+          var hostToken = hostname.replace(/[^a-z0-9]/g, "");
+
+          var brandMentioned = hostToken.indexOf(brandToken) !== -1 ||
+            hostname.indexOf(officialLabel) !== -1;
+
+          var similarDomain = distance > 0 && distance <= 2 &&
+            Math.min(baseLabel.length, officialLabel.length) >= 4;
+
+          if (similarDomain || (brandMentioned && baseDomain !== officialBase)) {
+            if (!possibleImpersonation || distance < possibleImpersonation.distance) {
+              possibleImpersonation = {
+                brand: entry.brand,
+                domain: entry.domain,
+                distance: distance
+              };
+            }
+          }
+        });
+
+        if (exactMatch) {
+          add(0, "📚", "Khớp thư viện tên miền chính danh",
+            "Tên miền thuộc miền đã có trong thư viện tham khảo: " + exactMatch.domain +
+            ". Điều này không chứng minh mọi trang con hoặc nội dung trên đó an toàn.");
+        } else if (possibleImpersonation) {
+          add(28, "🛡️", "Có dấu hiệu giả mạo tên miền",
+            "Tên miền này giống hoặc nhắc đến thương hiệu " + possibleImpersonation.brand +
+            " nhưng không khớp tên miền chính danh " + possibleImpersonation.domain +
+            ". Hãy tự mở website chính thức bằng địa chỉ đã biết; không nhập mật khẩu hoặc thông tin thanh toán.");
+        } else {
+          add(0, "📚", "Chưa khớp thư viện tên miền chính danh",
+            "Tên miền chưa khớp danh sách tham khảo tích hợp sẵn. Điều này không tự động có nghĩa là độc hại hoặc an toàn.");
+        }
+
+        if (findings.every(function (finding) {
+          return finding.title === "Sử dụng HTTPS" ||
+            finding.title === "Khớp thư viện tên miền chính danh" ||
+            finding.title === "Chưa khớp thư viện tên miền chính danh";
+        })) {
+          add(0, "✅", "Chưa thấy dấu hiệu rõ ràng từ URL",
+            "Không phát hiện dấu hiệu phổ biến trong các phép kiểm tra cục bộ. Công cụ chưa kiểm tra nội dung thực tế hoặc danh tiếng URL từ nguồn bên ngoài.");
+        }
+
+        score = Math.max(0, Math.min(100, score));
+
+        var level, title, summary, color;
+
+        if (score >= 60) {
+          level = "RỦI RO CAO";
+          title = "Liên kết có nhiều dấu hiệu đáng ngờ";
+          summary = "Không nên mở liên kết hoặc nhập thông tin cá nhân trước khi xác minh nguồn.";
+          color = "#ff657c";
+        } else if (score >= 30) {
+          level = "CẦN THẬN TRỌNG";
+          title = "Phát hiện một số dấu hiệu cần xem xét";
+          summary = "Hãy xác minh tên miền qua kênh chính thức trước khi tiếp tục.";
+          color = "#ffca68";
+        } else {
+          level = "RỦI RO THẤP THEO PHÂN TÍCH CỤC BỘ";
+          title = "Ít dấu hiệu đáng ngờ được phát hiện";
+          summary = "Đây không phải xác nhận website an toàn; nội dung độc hại có thể không thể hiện trong URL.";
+          color = "#5ce1a0";
+        }
+
+        return {
+          score: score,
+          level: level,
+          title: title,
+          summary: summary,
+          color: color,
+          findings: findings,
+          url: parsed.href
+        };
+      }
+
+      function renderResult(result) {
+        var panel = getElement("resultPanel");
+        var circle = getElement("scoreCircle");
+        var tag = getElement("riskTag");
+        var list = getElement("detailList");
+
+        setText("score", result.score);
+        setText("resultTitle", result.title);
+        setText("resultSummary", result.summary);
+        setText("checkedUrl", result.url);
+
+        if (tag) {
+          tag.textContent = result.level;
+          tag.style.color = result.color;
+          tag.style.backgroundColor = result.color + "20";
+        }
+
+        if (circle) {
+          circle.style.setProperty("--score-color", result.color);
+          circle.style.setProperty("--progress", (result.score * 3.6) + "deg");
+        }
+
+        if (list) {
+          list.replaceChildren();
+
+          result.findings.forEach(function (finding) {
+            var item = document.createElement("div");
+            item.className = "detail-item";
+
+            var icon = document.createElement("div");
+            icon.className = "detail-icon";
+            icon.textContent = finding.icon;
+
+            var content = document.createElement("div");
+            var title = document.createElement("strong");
+            title.textContent = finding.title;
+
+            var description = document.createElement("p");
+            description.textContent = finding.description;
+
+            content.appendChild(title);
+            content.appendChild(description);
+            item.appendChild(icon);
+            item.appendChild(content);
+            list.appendChild(item);
+          });
+        }
+
+        lastReport =
+          "LINKGUARD AI - BÁO CÁO PHÂN TÍCH URL\n" +
+          "URL: " + result.url + "\n" +
+          "Điểm rủi ro heuristic: " + result.score + "/100\n" +
+          "Mức đánh giá: " + result.level + "\n" +
+          "Kết luận: " + result.title + "\n" +
+          "Nhận xét: " + result.summary + "\n\n" +
+          "CHI TIẾT:\n" +
+          result.findings.map(function (finding, index) {
+            return (index + 1) + ". " + finding.title + "\n" + finding.description;
+          }).join("\n\n") +
+          "\n\nLưu ý: Điểm số là heuristic, không phải kết quả xác minh website.";
+
+        if (panel) {
+          panel.classList.add("show");
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+            on("scanForm", "submit", function (event) {
+        event.preventDefault();
+
+        var input = getElement("urlInput");
+        var button = getElement("scanButton");
+        var status = getElement("scanStatus");
+
+        if (!input) return;
+
+        if (button) button.disabled = true;
+        if (status) status.textContent = "Đang phân tích cấu trúc URL…";
+
+        try {
+          var parsed = normalizeUrl(input.value);
+          var result = analyzeUrl(parsed);
+
+          renderResult(result);
+
+          if (status) status.textContent = "Đã hoàn tất phân tích cục bộ.";
+        } catch (error) {
+          if (status) status.textContent = error.message || "Không thể phân tích URL.";
+          var panel = getElement("resultPanel");
+          if (panel) panel.classList.remove("show");
+        } finally {
+          if (button) button.disabled = false;
+        }
+      });
+
+      document.querySelectorAll("[data-example]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var input = getElement("urlInput");
+          var status = getElement("scanStatus");
+
+          if (input) {
+            input.value = button.getAttribute("data-example") || "";
+            input.focus();
+          }
+
+          if (status) {
+            status.textContent = "Đã điền URL mẫu. Nhấn “Phân tích URL” để tiếp tục.";
+          }
+        });
+      });
+
+      on("clearResult", "click", function () {
+        var panel = getElement("resultPanel");
+        var input = getElement("urlInput");
+        var status = getElement("scanStatus");
+
+        if (panel) panel.classList.remove("show");
+        if (input) input.value = "";
+        if (status) status.textContent = "Đã xóa kết quả phân tích.";
+        lastReport = "";
+      });
+
+      on("copyReport", "click", async function () {
+        var status = getElement("scanStatus");
+
+        if (!lastReport) {
+          if (status) status.textContent = "Chưa có báo cáo để sao chép.";
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(lastReport);
+          if (status) status.textContent = "Đã sao chép báo cáo.";
+        } catch (error) {
+          var area = document.createElement("textarea");
+          area.value = lastReport;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+
+          var copied = false;
+
+          try {
+            copied = document.execCommand("copy");
+          } catch (copyError) {
+            copied = false;
+          }
+
+          area.remove();
+
+          if (status) {
+            status.textContent = copied
+              ? "Đã sao chép báo cáo."
+              : "Không thể tự sao chép. Hãy thử lại trên trang HTTPS.";
+          }
+        }
+      });
+
+      function readReviews() {
+        try {
+          var value = localStorage.getItem(STORAGE_KEY);
+          var reviews = value ? JSON.parse(value) : [];
+          return Array.isArray(reviews) ? reviews : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveReviews(reviews) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function renderReviews() {
+        var list = getElement("reviewList");
+        if (!list) return;
+
+        list.replaceChildren();
+
+        var reviews = readReviews();
+
+        if (reviews.length === 0) {
+          var empty = document.createElement("p");
+          empty.className = "muted small";
+          empty.textContent = "Chưa có đánh giá nào trên trình duyệt này.";
+          list.appendChild(empty);
+          return;
+        }
+
+        reviews.slice().reverse().forEach(function (review) {
+          var card = document.createElement("article");
+          card.className = "review";
+
+          var header = document.createElement("div");
+          header.className = "review-header";
+
+          var name = document.createElement("strong");
+          name.textContent = review.name || "Người dùng";
+
+          var stars = document.createElement("span");
+          stars.className = "stars";
+
+          var rating = Math.max(1, Math.min(5, Number(review.rating) || 5));
+          stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+
+          header.appendChild(name);
+          header.appendChild(stars);
+
+          var message = document.createElement("p");
+          message.textContent = review.text;
+
+          var date = document.createElement("div");
+          date.className = "muted small";
+          date.style.marginTop = "8px";
+          date.textContent = review.date || "";
+
+          card.appendChild(header);
+          card.appendChild(message);
+          card.appendChild(date);
+          list.appendChild(card);
+        });
+      }
+            on("reviewForm", "submit", function (event) {
         event.preventDefault();
 
         var nameInput = getElement("reviewName");
