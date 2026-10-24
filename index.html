@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -6,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080d1b">
   <meta name="description" content="LINKGUARD AI - Công cụ phân tích dấu hiệu rủi ro của liên kết trực tuyến.">
-  <title>LINKSCANNER AI | Kiểm tra liên kết an toàn</title>
+  <title>LINKGUARD AI | Phân tích rủi ro liên kết</title>
 
   <style>
     :root {
@@ -38,7 +37,6 @@
     }
 
     button, input, textarea { font: inherit; }
-
     button { cursor: pointer; }
 
     .container {
@@ -145,7 +143,6 @@
     }
 
     .muted { color: var(--muted); }
-
     .small { font-size: 13px; }
 
     .input-row {
@@ -200,6 +197,28 @@
       background: #ff657c12;
       border: 1px solid #ff657c45;
     }
+
+    .domain-library {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .domain-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #344663;
+      border-radius: 9px;
+      background: #0b1324;
+      color: #c3d5f4;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .domain-chip strong { color: var(--cyan); }
 
     .examples {
       display: flex;
@@ -514,6 +533,17 @@
       <div class="status" id="scanStatus" role="status" aria-live="polite"></div>
     </section>
 
+    <section class="panel" aria-labelledby="domainLibraryTitle">
+      <h2 class="panel-title" id="domainLibraryTitle">📚 Thư viện tên miền chính danh</h2>
+      <p class="muted small">
+        Danh sách tham khảo tích hợp sẵn để đối chiếu tên miền. Danh sách chưa đầy đủ và cần được cập nhật, xác minh định kỳ.
+      </p>
+      <div class="domain-library" id="domainLibraryList" aria-label="Danh sách tên miền tham khảo"></div>
+      <p class="muted small" style="margin-bottom:0">
+        Tên miền khớp danh sách không bảo đảm mọi trang con an toàn; tên miền chưa có trong danh sách cũng không đồng nghĩa là độc hại.
+      </p>
+    </section>
+
     <section class="panel result" id="resultPanel" aria-labelledby="resultTitle">
       <div class="result-top">
         <div class="score-circle" id="scoreCircle">
@@ -539,7 +569,7 @@
       <div class="detail-list" id="detailList"></div>
 
       <div class="notice">
-        ⚠️ Lưu ý: kết quả này chỉ chính xác 90%. Không đảm bảo URL an toàn tuyệt đối
+        ⚠️ Lưu ý: đây là phân tích heuristic cục bộ và thư viện tên miền tham khảo, không phải hệ thống xác minh nội dung trực tiếp. Không thể cam kết phát hiện mọi URL độc hại.
       </div>
 
       <div class="result-actions">
@@ -557,12 +587,12 @@
       <article class="feature">
         <div class="feature-icon">⚡</div>
         <h3>Phản hồi nhanh</h3>
-        <p>Phân tích cục bộ ngay trong trình duyệt, không cần gửi URL đến máy chủ.</p>
+        <p>Phân tích cấu trúc URL và đối chiếu thư viện tên miền tham khảo ngay trong trình duyệt.</p>
       </article>
       <article class="feature">
         <div class="feature-icon">🔐</div>
         <h3>Ưu tiên riêng tư</h3>
-        <p>Phiên bản này không tự truy cập URL bạn nhập và không tự gửi URL đi nơi khác.</p>
+        <p>Phiên bản này không tự mở URL và không gửi URL đến máy chủ bên ngoài.</p>
       </article>
     </section>
 
@@ -612,7 +642,7 @@
   <footer>
     <div class="container">
       <div class="footer-brand">LINKGUARD AI</div>
-      <div>Trình phân tích dấu hiệu rủi ro liên kết</div>
+      <div>Trình phân tích URL và đối chiếu tên miền tham khảo</div>
       <div style="margin-top:5px">Made by Anh Duy 9A2 TS · 2026</div>
       <div style="margin-top:10px">Công cụ hỗ trợ tham khảo, không thay thế hệ thống phát hiện mã độc chuyên dụng.</div>
     </div>
@@ -622,32 +652,22 @@
     (function () {
       "use strict";
 
-      // Lấy phần tử an toàn: thiếu phần tử sẽ báo lỗi rõ ràng,
-      // thay vì làm dừng toàn bộ chương trình bằng null.addEventListener.
       function getElement(id) {
         var element = document.getElementById(id);
-
         if (!element) {
           console.error("[LINKGUARD AI] Không tìm thấy phần tử HTML có id:", id);
         }
-
         return element;
       }
 
       function on(id, eventName, handler) {
         var element = getElement(id);
-
-        if (element) {
-          element.addEventListener(eventName, handler);
-        }
+        if (element) element.addEventListener(eventName, handler);
       }
 
       function setText(id, value) {
         var element = getElement(id);
-
-        if (element) {
-          element.textContent = String(value);
-        }
+        if (element) element.textContent = String(value);
       }
 
       var lastReport = "";
@@ -664,13 +684,11 @@
           throw new Error("URL không được chứa khoảng trắng hoặc ký tự điều khiển.");
         }
 
-        // Chỉ tự thêm HTTPS nếu người dùng chưa nhập giao thức.
         if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value)) {
           value = "https://" + value;
         }
 
         var parsed;
-
         try {
           parsed = new URL(value);
         } catch (error) {
@@ -694,44 +712,102 @@
         return parsed;
       }
 
+      var officialDomains = [
+        { brand: "Google", domain: "google.com" },
+        { brand: "YouTube", domain: "youtube.com" },
+        { brand: "Microsoft", domain: "microsoft.com" },
+        { brand: "Apple", domain: "apple.com" },
+        { brand: "Facebook", domain: "facebook.com" },
+        { brand: "Instagram", domain: "instagram.com" },
+        { brand: "Wikipedia", domain: "wikipedia.org" },
+        { brand: "GitHub", domain: "github.com" },
+        { brand: "OpenAI", domain: "openai.com" },
+        { brand: "PayPal", domain: "paypal.com" },
+        { brand: "Amazon", domain: "amazon.com" },
+        { brand: "Netflix", domain: "netflix.com" },
+        { brand: "Zalo", domain: "zalo.me" },
+        { brand: "VnExpress", domain: "vnexpress.net" },
+        { brand: "Cổng Thông tin Chính phủ", domain: "chinhphu.vn" }
+      ];
+
       function analyzeUrl(parsed) {
         var findings = [];
         var score = 0;
-        var hostname = parsed.hostname.toLowerCase();
+        var hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
         var fullUrl = parsed.href.toLowerCase();
-        var pathAndQuery = (parsed.pathname + parsed.search).toLowerCase();
+        var pathAndQuery = (parsed.pathname + parsed.search + parsed.hash).toLowerCase();
+        var urlText = (hostname + " " + pathAndQuery).normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
 
         function add(points, icon, title, description) {
           score += points;
-          findings.push({
-            icon: icon,
-            title: title,
-            description: description
-          });
+          findings.push({ icon: icon, title: title, description: description });
         }
 
-        // HTTPS chỉ mã hóa kết nối; không chứng minh website đáng tin.
+        function getBaseDomain(host) {
+          var labels = host.split(".");
+          if (labels.length <= 2) return host;
+
+          var twoPartSuffixes = [
+            "com.vn", "net.vn", "org.vn", "gov.vn", "edu.vn",
+            "ac.vn", "co.uk", "org.uk", "com.au", "co.jp",
+            "com.br", "co.nz"
+          ];
+
+          var lastTwo = labels.slice(-2).join(".");
+          if (twoPartSuffixes.indexOf(lastTwo) !== -1 && labels.length >= 3) {
+            return labels.slice(-3).join(".");
+          }
+          return labels.slice(-2).join(".");
+        }
+
+        function editDistance(a, b) {
+          var previous = [];
+          var current = [];
+          var i, j;
+
+          for (j = 0; j <= b.length; j++) previous[j] = j;
+
+          for (i = 1; i <= a.length; i++) {
+            current[0] = i;
+
+            for (j = 1; j <= b.length; j++) {
+              current[j] = Math.min(
+                current[j - 1] + 1,
+                previous[j] + 1,
+                previous[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)
+              );
+            }
+
+            var temp = previous;
+            previous = current;
+            current = temp;
+          }
+
+          return previous[b.length];
+        }
+
         if (parsed.protocol === "http:") {
-          add(15, "⚠️", "Sử dụng HTTP",
-            "Kết nối không dùng HTTPS. Dữ liệu trao đổi có thể không được bảo vệ bằng TLS.");
+          add(12, "⚠️", "Sử dụng HTTP",
+            "Kết nối không dùng HTTPS. Đây là điểm cần thận trọng, nhưng riêng HTTP không chứng minh website độc hại.");
         } else {
           add(0, "🔒", "Sử dụng HTTPS",
-            "URL dùng HTTPS. Điều này bảo vệ kết nối nhưng không chứng minh website này hoàn toàn hợp pháp.");
+            "URL dùng HTTPS. Điều này bảo vệ kết nối nhưng không xác nhận nội dung hoặc chủ sở hữu website.");
         }
 
         if (hostname.indexOf("xn--") !== -1) {
-          add(25, "🌐", "Tên miền có mã Punycode",
-            "Tên miền chứa xn--, có thể dùng ký tự quốc tế. Hãy kiểm tra kỹ khả năng giả mạo tên miền.");
+          add(22, "🌐", "Tên miền dùng Punycode",
+            "Tên miền có nhãn xn-- được mã hóa. Một số tên miền quốc tế hợp pháp cũng dùng dạng này; hãy kiểm tra kỹ ký tự hiển thị.");
         }
 
         if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
-          add(20, "🧭", "Địa chỉ dùng IPv4 trực tiếp",
+          add(18, "🧭", "Dùng địa chỉ IPv4 trực tiếp",
             "URL dùng địa chỉ IP thay vì tên miền thông thường. Đây là dấu hiệu cần xem xét, không phải bằng chứng độc hại.");
         }
 
-        if (hostname.indexOf("@") !== -1) {
-          add(30, "🚨", "Tên miền chứa ký tự @",
-            "Ký tự @ trong phần hostname có thể là dấu hiệu đánh lừa. Hãy xác định chính xác máy chủ thực tế.");
+        if (parsed.username || parsed.password) {
+          add(30, "🚨", "URL chứa thông tin trước tên miền",
+            "URL có thông tin đăng nhập trong phần user-info, có thể được dùng để đánh lừa người đọc về máy chủ thực tế.");
         }
 
         var shorteners = [
@@ -740,8 +816,8 @@
         ];
 
         if (shorteners.indexOf(hostname) !== -1) {
-          add(15, "↗️", "Dịch vụ rút gọn URL",
-            "Đích đến thực sự bị ẩn sau liên kết rút gọn. Chỉ truy cập nếu bạn xác minh được nguồn gửi.");
+          add(12, "↗️", "Dịch vụ rút gọn URL",
+            "Đích đến thật có thể bị che khuất. Chỉ mở nếu bạn tin tưởng nguồn gửi và có thể xác minh đích đến.");
         }
 
         var suspiciousTlds = [
@@ -749,12 +825,32 @@
           ".work", ".country", ".gq", ".tk", ".rest"
         ];
 
-        if (suspiciousTlds.some(function (tld) {
-          return hostname.endsWith(tld);
-        })) {
-          add(10, "🔎", "Đuôi tên miền cần thận trọng",
-            "Một số chiến dịch lừa đảo lợi dụng tên miền giá rẻ hoặc ít phổ biến. Đuôi tên miền riêng lẻ không kết luận được độ an toàn.");
+        if (suspiciousTlds.some(function (tld) { return hostname.endsWith(tld); })) {
+          add(8, "🔎", "Đuôi tên miền cần xem xét",
+            "Đuôi tên miền này có thể xuất hiện trong các liên kết rủi ro, nhưng bản thân đuôi miền không đủ để kết luận độc hại.");
         }
+
+        var categoryRules = [
+          {
+            label: "cá cược / cờ bạc",
+            regex: /(^|[^a-z0-9])(casino|betting|sportsbook|poker|slot[-_ ]?game|gambling|wager|ca[-_ ]?cuoc|caocuoc|so[-_ ]?de|xoc[-_ ]?dia|tai[-_ ]?xiu)([^a-z0-9]|$)/i
+          },
+          {
+            label: "nội dung người lớn",
+            regex: /(^|[^a-z0-9])(porn|xxx|adult[-_ ]?content|sex[-_ ]?video|webcam[-_ ]?sex|phim[-_ ]?sex|khiêu dâm|khieu dam|18plus)([^a-z0-9]|$)/i
+          },
+          {
+            label: "lừa đảo / giả mạo",
+            regex: /(^|[^a-z0-9])(phishing|scam|fraud|fake[-_ ]?login|steal[-_ ]?password|xac[-_ ]?minh[-_ ]?tai[-_ ]?khoan|nhan[-_ ]?qua|trung[-_ ]?thuong|claim[-_ ]?prize)([^a-z0-9]|$)/i
+          }
+        ];
+
+        categoryRules.forEach(function (rule) {
+          if (rule.regex.test(urlText)) {
+            add(18, "🚩", "Từ khóa có thể liên quan đến " + rule.label,
+              "URL có chứa mẫu từ khóa đáng chú ý. Từ khóa có thể xuất hiện trong nội dung hợp pháp hoặc bị nhúng để đánh lừa; cần kiểm tra thêm.");
+          }
+        });
 
         var suspiciousWords = [
           "login", "verify", "verification", "password", "signin",
@@ -768,43 +864,91 @@
         });
 
         if (matchedWords.length > 0) {
-          add(Math.min(20, matchedWords.length * 5), "🔑",
+          add(Math.min(16, matchedWords.length * 4), "🔑",
             "Có từ khóa thường gặp trong URL lừa đảo",
             "Phát hiện từ khóa: " + matchedWords.join(", ") +
-            ". Các từ này cũng có thể xuất hiện hợp pháp; cần kiểm tra ngữ cảnh.");
+            ". Các từ này cũng có thể xuất hiện trên website hợp pháp; cần kiểm tra ngữ cảnh.");
         }
 
         if (hostname.split(".").length >= 5) {
-          add(10, "🧩", "Tên miền có nhiều cấp",
-            "Tên miền có nhiều cấp phụ. Hãy chắc chắn bạn đang ở đúng tên miền chính thức.");
+          add(8, "🧩", "Tên miền có nhiều cấp",
+            "Tên miền có nhiều cấp phụ. Hãy xác định tên miền đăng ký thực tế và không chỉ dựa vào phần đầu của địa chỉ.");
         }
 
         if (hostname.length > 45) {
-          add(10, "📏", "Tên miền dài bất thường",
-            "Tên miền dài có thể gây khó nhận diện và bị lợi dụng để giả mạo thương hiệu.");
+          add(8, "📏", "Tên miền dài bất thường",
+            "Tên miền dài có thể gây khó nhận diện hoặc được dùng để bắt chước tên miền khác.");
         }
 
         if (fullUrl.length > 180) {
-          add(5, "🧵", "URL rất dài",
-            "URL dài có thể chứa nhiều tham số khó đọc. Không mở liên kết nếu bạn không tin tưởng nguồn gửi.");
+          add(4, "🧵", "URL rất dài",
+            "URL dài có thể chứa nhiều tham số khó đọc. Không chia sẻ URL có token hoặc mã phiên.");
         }
 
         if (parsed.search.length > 100) {
-          add(5, "🔗", "Có nhiều tham số truy vấn",
+          add(4, "🔗", "Chuỗi tham số dài",
             "URL có chuỗi tham số dài. Không gửi URL chứa mã phiên, token hoặc thông tin riêng tư cho người khác.");
         }
+                var baseDomain = getBaseDomain(hostname);
+        var exactMatch = null;
+        var possibleImpersonation = null;
 
-        if (findings.length === 1) {
-          add(0, "✅", "Chưa thấy dấu hiệu rõ ràng từ URL",
-            "Không phát hiện dấu hiệu phổ biến trong những phép kiểm tra cơ bản. Điều này không có nghĩa website chắc chắn an toàn.");
+        officialDomains.forEach(function (entry) {
+          if (hostname === entry.domain || hostname.endsWith("." + entry.domain)) {
+            exactMatch = entry;
+            return;
+          }
+
+          var officialBase = getBaseDomain(entry.domain);
+          var baseLabel = baseDomain.split(".")[0];
+          var officialLabel = officialBase.split(".")[0];
+          var distance = editDistance(baseLabel, officialLabel);
+          var brandToken = entry.brand.toLowerCase().replace(/[^a-z0-9]/g, "");
+          var hostToken = hostname.replace(/[^a-z0-9]/g, "");
+
+          var brandMentioned = hostToken.indexOf(brandToken) !== -1 ||
+            hostname.indexOf(officialLabel) !== -1;
+
+          var similarDomain = distance > 0 && distance <= 2 &&
+            Math.min(baseLabel.length, officialLabel.length) >= 4;
+
+          if (similarDomain || (brandMentioned && baseDomain !== officialBase)) {
+            if (!possibleImpersonation || distance < possibleImpersonation.distance) {
+              possibleImpersonation = {
+                brand: entry.brand,
+                domain: entry.domain,
+                distance: distance
+              };
+            }
+          }
+        });
+
+        if (exactMatch) {
+          add(0, "📚", "Khớp thư viện tên miền chính danh",
+            "Tên miền thuộc miền đã có trong thư viện tham khảo: " + exactMatch.domain +
+            ". Điều này không chứng minh mọi trang con hoặc nội dung trên đó an toàn.");
+        } else if (possibleImpersonation) {
+          add(28, "🛡️", "Có dấu hiệu giả mạo tên miền",
+            "Tên miền này giống hoặc nhắc đến thương hiệu " + possibleImpersonation.brand +
+            " nhưng không khớp tên miền chính danh " + possibleImpersonation.domain +
+            ". Hãy tự mở website chính thức bằng địa chỉ đã biết; không nhập mật khẩu hoặc thông tin thanh toán.");
+        } else {
+          add(0, "📚", "Chưa khớp thư viện tên miền chính danh",
+            "Tên miền chưa khớp danh sách tham khảo tích hợp sẵn. Điều này không tự động có nghĩa là độc hại hoặc an toàn.");
         }
 
-        score = Math.min(100, score);
+        if (findings.every(function (finding) {
+          return finding.title === "Sử dụng HTTPS" ||
+            finding.title === "Khớp thư viện tên miền chính danh" ||
+            finding.title === "Chưa khớp thư viện tên miền chính danh";
+        })) {
+          add(0, "✅", "Chưa thấy dấu hiệu rõ ràng từ URL",
+            "Không phát hiện dấu hiệu phổ biến trong các phép kiểm tra cục bộ. Công cụ chưa kiểm tra nội dung thực tế hoặc danh tiếng URL từ nguồn bên ngoài.");
+        }
 
-        var level;
-        var title;
-        var summary;
-        var color;
+        score = Math.max(0, Math.min(100, score));
+
+        var level, title, summary, color;
 
         if (score >= 60) {
           level = "RỦI RO CAO";
@@ -817,9 +961,9 @@
           summary = "Hãy xác minh tên miền qua kênh chính thức trước khi tiếp tục.";
           color = "#ffca68";
         } else {
-          level = "RỦI RO THẤP THEO HEURISTIC";
+          level = "RỦI RO THẤP THEO PHÂN TÍCH CỤC BỘ";
           title = "Ít dấu hiệu đáng ngờ được phát hiện";
-          summary = "Đây chỉ là kết quả phân tích chuỗi URL, không phải xác nhận an toàn.";
+          summary = "Đây không phải xác nhận website an toàn; nội dung độc hại có thể không thể hiện trong URL.";
           color = "#5ce1a0";
         }
 
@@ -900,8 +1044,7 @@
           panel.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
-
-      on("scanForm", "submit", function (event) {
+            on("scanForm", "submit", function (event) {
         event.preventDefault();
 
         var input = getElement("urlInput");
@@ -939,7 +1082,9 @@
             input.focus();
           }
 
-          if (status) status.textContent = "Đã điền URL mẫu. Nhấn “Phân tích URL” để tiếp tục.";
+          if (status) {
+            status.textContent = "Đã điền URL mẫu. Nhấn “Phân tích URL” để tiếp tục.";
+          }
         });
       });
 
@@ -966,7 +1111,6 @@
           await navigator.clipboard.writeText(lastReport);
           if (status) status.textContent = "Đã sao chép báo cáo.";
         } catch (error) {
-          // Dự phòng cho trình duyệt không cho phép Clipboard API.
           var area = document.createElement("textarea");
           area.value = lastReport;
           area.style.position = "fixed";
@@ -992,7 +1136,6 @@
         }
       });
 
-      // Đánh giá được lưu cục bộ trên thiết bị hiện tại.
       function readReviews() {
         try {
           var value = localStorage.getItem(STORAGE_KEY);
@@ -1061,8 +1204,7 @@
           list.appendChild(card);
         });
       }
-
-      on("reviewForm", "submit", function (event) {
+            on("reviewForm", "submit", function (event) {
         event.preventDefault();
 
         var nameInput = getElement("reviewName");
@@ -1090,7 +1232,9 @@
         });
 
         if (!saveReviews(reviews)) {
-          if (status) status.textContent = "Không thể lưu đánh giá. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.";
+          if (status) {
+            status.textContent = "Không thể lưu đánh giá. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.";
+          }
           return;
         }
 
@@ -1115,7 +1259,29 @@
         }
       });
 
-      // Khởi tạo giao diện; các thao tác đều có kiểm tra phần tử.
+      function renderDomainLibrary() {
+        var list = getElement("domainLibraryList");
+        if (!list) return;
+
+        list.replaceChildren();
+
+        officialDomains.forEach(function (entry) {
+          var chip = document.createElement("span");
+          chip.className = "domain-chip";
+
+          var brand = document.createElement("strong");
+          brand.textContent = entry.brand;
+
+          var domain = document.createElement("span");
+          domain.textContent = entry.domain;
+
+          chip.appendChild(brand);
+          chip.appendChild(domain);
+          list.appendChild(chip);
+        });
+      }
+
+      renderDomainLibrary();
       renderReviews();
 
       console.info("[LINKGUARD AI] Khởi tạo thành công.");
