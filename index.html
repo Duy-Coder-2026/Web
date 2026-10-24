@@ -1,597 +1,85 @@
+      on("reviewForm", "submit", function (event) {
+        event.preventDefault();
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080d1b">
-<meta name="description" content="LINKGUARD AI - Công cụ phân tích dấu hiệu rủi ro của liên kết.">
-<title>LINKGUARD AI | Phân tích rủi ro liên kết</title>
+        var nameInput = getElement("reviewName");
+        var ratingInput = getElement("reviewRating");
+        var textInput = getElement("reviewText");
+        var status = getElement("reviewStatus");
 
-<style>
-:root {
-  --bg:#080d1b; --panel:#10182b; --border:#26344f;
-  --text:#edf3ff; --muted:#9cabc4; --blue:#65a7ff;
-  --cyan:#5eead4; --red:#ff657c; --yellow:#ffca68;
-  --green:#5ce1a0;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; min-height:100vh; color:var(--text);
-  background:radial-gradient(ellipse at top left,#17274b,transparent 45%),
-  radial-gradient(ellipse at top right,#102b35,transparent 35%),var(--bg);
-  font-family:"Segoe UI",Arial,sans-serif; line-height:1.6;
-}
-button,input,textarea,select { font:inherit; }
-button { cursor:pointer; }
-.container { width:min(1050px,calc(100% - 32px)); margin:auto; }
-header { padding:20px 0; border-bottom:1px solid #ffffff16; }
-.nav { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.brand { display:flex; align-items:center; gap:12px; font-size:21px; font-weight:850; }
-.logo {
-  display:grid; place-items:center; width:42px; height:42px;
-  border-radius:13px; background:linear-gradient(135deg,#367dff,#45dfce);
-  color:#071323; font-size:22px;
-}
-.version {
-  color:var(--cyan); border:1px solid #5eead43c;
-  padding:5px 10px; border-radius:30px; font-size:12px;
-}
-main { padding:42px 0 55px; }
-.hero { text-align:center; max-width:760px; margin:0 auto 32px; }
-.eyebrow {
-  display:inline-block; padding:5px 12px; border:1px solid #65a7ff45;
-  border-radius:30px; color:var(--blue); font-size:12px;
-  font-weight:800; letter-spacing:1px;
-}
-h1 { margin:17px 0 12px; font-size:clamp(32px,5vw,54px); line-height:1.15; }
-.gradient {
-  background:linear-gradient(90deg,#75aaff,#5eead4);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-.hero p,.muted { color:var(--muted); }
-.panel {
-  background:linear-gradient(145deg,#121c31f5,#0e1628f5);
-  border:1px solid var(--border); border-radius:20px;
-  padding:24px; margin-bottom:20px; box-shadow:0 20px 70px #00000020;
-}
-.panel-title { font-size:18px; font-weight:800; margin:0 0 5px; }
-.small { font-size:13px; }
-.input-row { display:flex; gap:10px; margin-top:18px; }
-.url-input {
-  flex:1; min-width:0; padding:15px 16px; color:var(--text);
-  background:#080f20; border:1px solid #33435f; border-radius:12px; outline:none;
-}
-.url-input:focus,.field:focus {
-  border-color:var(--blue); box-shadow:0 0 0 3px #65a7ff18;
-}
-.btn {
-  border:0; border-radius:12px; padding:12px 18px;
-  font-weight:800; transition:transform .15s;
-}
-.btn:hover { transform:translateY(-1px); }
-.btn:disabled { opacity:.6; cursor:wait; }
-.btn-primary { color:#071323; background:linear-gradient(135deg,#79b0ff,#5eead4); }
-.btn-secondary { color:var(--text); background:#1b2942; border:1px solid #344663; }
-.btn-danger { color:#ff9aaa; background:#ff657c12; border:1px solid #ff657c45; }
-.examples,.result-actions {
-  display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px;
-}
-.example-btn {
-  border:1px solid #344663; background:#16223a; color:#c3d5f4;
-  border-radius:8px; padding:5px 9px; font-size:12px;
-}
-.status { margin-top:12px; min-height:22px; color:var(--muted); font-size:13px; }
-.result { display:none; }
-.result.show { display:block; }
-.result-top {
-  display:grid; grid-template-columns:150px 1fr; align-items:center; gap:25px;
-}
-.score-circle {
-  --score-color:var(--green); --progress:0deg;
-  width:135px; height:135px; border-radius:50%; display:grid; place-items:center;
-  background:conic-gradient(var(--score-color) var(--progress),#29364d 0deg);
-  position:relative; margin:auto;
-}
-.score-circle::before {
-  content:""; position:absolute; inset:9px; border-radius:50%; background:#111a2d;
-}
-.score-inner { position:relative; z-index:1; text-align:center; }
-.score-number { font-size:39px; font-weight:900; line-height:1.1; }
-.score-caption { font-size:11px; color:var(--muted); }
-.risk-label { display:inline-block; padding:5px 10px; border-radius:7px; font-weight:850; font-size:12px; }
-.result-heading { margin:10px 0 6px; font-size:23px; }
-.result-description { color:var(--muted); margin:0; }
-.checked-url {
-  overflow-wrap:anywhere; background:#080f20; border:1px solid #283750;
-  padding:12px; border-radius:10px; font-size:13px; margin-top:18px;
-}
-.section-heading { font-size:15px; margin:22px 0 10px; }
-.detail-list { display:grid; gap:9px; }
-.detail-item {
-  display:flex; align-items:flex-start; gap:10px; padding:12px;
-  background:#0b1324; border:1px solid #24334b; border-radius:10px;
-}
-.detail-icon { font-size:17px; }
-.detail-item strong { display:block; font-size:13px; }
-.detail-item p { margin:3px 0 0; font-size:13px; color:var(--muted); }
-.notice {
-  padding:13px 15px; border:1px solid #ffca6845; background:#ffca680c;
-  color:#e8d4a6; border-radius:11px; font-size:13px; margin-top:18px;
-}
-.features { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:22px 0; }
-.feature { padding:20px; border-radius:15px; background:#111a2cbd; border:1px solid var(--border); }
-.feature-icon { font-size:24px; }
-.feature h3 { margin:9px 0 5px; font-size:15px; }
-.feature p { margin:0; color:var(--muted); font-size:13px; }
-.review-form { display:grid; gap:12px; margin-top:15px; }
-.field-label { display:block; font-size:13px; font-weight:700; margin-bottom:6px; }
-.field {
-  width:100%; padding:12px; border-radius:10px; border:1px solid #33435f;
-  background:#080f20; color:var(--text); outline:none;
-}
-textarea.field { resize:vertical; min-height:85px; }
-.review-list { display:grid; gap:12px; margin-top:20px; }
-.review { background:#0b1324; border:1px solid #283750; border-radius:11px; padding:14px; }
-.review-header { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.stars { color:var(--yellow); letter-spacing:2px; }
-.review p { margin:8px 0 0; color:#c2cde0; white-space:pre-wrap; overflow-wrap:anywhere; }
-footer { padding:24px 0; border-top:1px solid #26344f; text-align:center; color:var(--muted); font-size:12px; }
-.footer-brand { font-weight:850; color:#dbe8ff; letter-spacing:1px; margin-bottom:5px; }
-@media(max-width:650px) {
-  main { padding-top:32px; }
-  .input-row { flex-direction:column; }
-  .input-row .btn { width:100%; }
-  .result-top { grid-template-columns:1fr; text-align:center; }
-  .features { grid-template-columns:1fr; }
-  .panel { padding:18px; }
-  .brand { font-size:17px; }
-  .version { font-size:10px; }
-}
-</style>
-</head>
+        if (!nameInput || !ratingInput || !textInput) return;
 
-<body>
-<header>
-  <div class="container nav">
-    <div class="brand"><div class="logo">🛡</div><span>LINKGUARD <span class="gradient">AI</span></span></div>
-    <span class="version">WEB SECURITY TOOL</span>
-  </div>
-</header>
+        var message = textInput.value.trim();
 
-<main class="container">
-  <section class="hero">
-    <span class="eyebrow">SMART LINK ANALYSIS</span>
-    <h1>Bảo vệ bạn trước <span class="gradient">liên kết nguy hiểm</span></h1>
-    <p>Phân tích dấu hiệu đáng ngờ của URL để giúp bạn thận trọng hơn trước khi truy cập liên kết trên Internet.</p>
-  </section>
+        if (!message) {
+          if (status) status.textContent = "Vui lòng nhập nội dung đánh giá.";
+          textInput.focus();
+          return;
+        }
 
-  <section class="panel">
-    <h2 class="panel-title">🔎 Kiểm tra liên kết</h2>
-    <p class="muted small">Nhập hoặc dán URL. Công cụ phân tích chuỗi địa chỉ ngay trên trình duyệt.</p>
-    <form id="scanForm">
-      <div class="input-row">
-        <input class="url-input" id="urlInput" type="text" inputmode="url"
-          autocomplete="url" placeholder="Ví dụ: https://example.com"
-          aria-label="Địa chỉ liên kết cần kiểm tra" required>
-        <button class="btn btn-primary" id="scanButton" type="submit">Phân tích URL →</button>
-      </div>
-    </form>
-    <div class="examples">
-      <span class="muted small">Thử nhanh:</span>
-      <button class="example-btn" type="button" data-example="https://example.com">URL mẫu</button>
-      <button class="example-btn" type="button" data-example="http://example.com">HTTP</button>
-      <button class="example-btn" type="button" data-example="https://g00gle-login.example.com/verify">URL đáng ngờ mẫu</button>
-    </div>
-    <div class="status" id="scanStatus" role="status" aria-live="polite"></div>
-  </section>
+        var reviews = readReviews();
 
-  <section class="panel result" id="resultPanel" aria-labelledby="resultTitle">
-    <div class="result-top">
-      <div class="score-circle" id="scoreCircle">
-        <div class="score-inner">
-          <div class="score-number" id="score">0</div>
-          <div class="score-caption">ĐIỂM RỦI RO / 100</div>
-        </div>
-      </div>
-      <div>
-        <span class="risk-label" id="riskTag">CHƯA ĐÁNH GIÁ</span>
-        <h2 class="result-heading" id="resultTitle">Kết quả phân tích</h2>
-        <p class="result-description" id="resultSummary"></p>
-      </div>
-    </div>
-    <div class="checked-url"><strong>URL được kiểm tra:</strong><div id="checkedUrl" style="overflow-wrap:anywhere;margin-top:5px"></div></div>
-    <h3 class="section-heading">Chi tiết phân tích</h3>
-    <div class="detail-list" id="detailList"></div>
-    <div class="notice">⚠️ Điểm số là phân tích heuristic cục bộ, không phải xác minh trực tiếp website. Công cụ không thể bảo đảm phát hiện mọi URL độc hại.</div>
-    <div class="result-actions">
-      <button class="btn btn-primary" id="copyReport" type="button">Sao chép báo cáo</button>
-      <button class="btn btn-secondary" id="clearResult" type="button">Xóa kết quả</button>
-    </div>
-  </section>
+        reviews.push({
+          name: nameInput.value.trim().slice(0, 40) || "Người dùng",
+          rating: Number(ratingInput.value),
+          text: message.slice(0, 500),
+          date: new Date().toLocaleString("vi-VN")
+        });
 
-  <section class="features">
-    <article class="feature"><div class="feature-icon">🔍</div><h3>Phân tích URL</h3><p>Kiểm tra cấu trúc địa chỉ, giao thức, tên miền và các dấu hiệu đáng ngờ.</p></article>
-    <article class="feature"><div class="feature-icon">⚡</div><h3>Phản hồi nhanh</h3><p>Phân tích URL ngay trên trình duyệt, không cần mở trang đích.</p></article>
-    <article class="feature"><div class="feature-icon">🔐</div><h3>Ưu tiên riêng tư</h3><p>Không tự mở URL hoặc gửi địa chỉ kiểm tra đến máy chủ bên ngoài.</p></article>
-  </section>
+        if (!saveReviews(reviews)) {
+          if (status) {
+            status.textContent = "Không thể lưu đánh giá. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.";
+          }
+          return;
+        }
 
-  <section class="panel">
-    <h2 class="panel-title">💬 Đánh giá LINKGUARD AI</h2>
-    <p class="muted small">Chia sẻ nhận xét của bạn về công cụ.</p>
-    <form class="review-form" id="reviewForm">
-      <div><label class="field-label" for="reviewName">Tên hiển thị</label><input class="field" id="reviewName" maxlength="40" placeholder="Tên của bạn"></div>
-      <div><label class="field-label" for="reviewRating">Mức đánh giá</label>
-        <select class="field" id="reviewRating">
-          <option value="5">★★★★★ — Rất tốt</option><option value="4">★★★★☆ — Tốt</option>
-          <option value="3">★★★☆☆ — Bình thường</option><option value="2">★★☆☆☆ — Cần cải thiện</option>
-          <option value="1">★☆☆☆☆ — Chưa tốt</option>
-        </select>
-      </div>
-      <div><label class="field-label" for="reviewText">Nội dung đánh giá</label><textarea class="field" id="reviewText" maxlength="500" placeholder="Bạn nghĩ gì về công cụ?"></textarea></div>
-      <div><button class="btn btn-primary" type="submit">Gửi đánh giá</button></div>
-    </form>
-    <div class="review-list" id="reviewList"></div>
-    <p class="muted small" id="reviewStatus" role="status"></p>
-    <button class="btn btn-danger" id="clearReviews" type="button" style="margin-top:14px">Xóa đánh giá trên thiết bị này</button>
-    <p class="muted small">Đánh giá được lưu trong trình duyệt hiện tại, chưa có cơ sở dữ liệu chung giữa nhiều người dùng.</p>
-  </section>
-</main>
+        textInput.value = "";
+        if (status) status.textContent = "Đã lưu đánh giá trên thiết bị này.";
+        renderReviews();
+      });
 
-<footer><div class="container">
-  <div class="footer-brand">LINKGUARD AI</div>
-  <div>Trình phân tích URL và đối chiếu tên miền tham khảo</div>
-  <div style="margin-top:5px">Made by Anh Duy 9A2 TS · 2026</div>
-  <div style="margin-top:10px">Công cụ hỗ trợ tham khảo, không thay thế hệ thống phát hiện mã độc chuyên dụng.</div>
-</div></footer>
+      on("clearReviews", "click", function () {
+        var status = getElement("reviewStatus");
 
-<script>
-"use strict";
+        if (!window.confirm("Bạn có chắc muốn xóa tất cả đánh giá được lưu trên trình duyệt này?")) {
+          return;
+        }
 
-(function () {
-  const $ = id => document.getElementById(id);
-  let lastReport = "";
-  const STORAGE_KEY = "linkguard_reviews_v2";
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          renderReviews();
+          if (status) status.textContent = "Đã xóa đánh giá trên thiết bị này.";
+        } catch (error) {
+          if (status) status.textContent = "Không thể xóa dữ liệu lưu trữ.";
+        }
+      });
 
-  // Dữ liệu nội bộ: không tạo danh sách tên miền trên giao diện.
-  const trustedDomains = [
-    "google.com", "youtube.com", "microsoft.com", "apple.com",
-    "facebook.com", "instagram.com", "wikipedia.org", "github.com",
-    "openai.com", "paypal.com", "amazon.com", "netflix.com",
-    "zalo.me", "vnexpress.net", "chinhphu.vn"
-  ];
+      function renderDomainLibrary() {
+        var list = getElement("domainLibraryList");
+        if (!list) return;
 
-  function normalizeUrl(raw) {
-    let value = raw.trim();
-    if (!value) throw new Error("Vui lòng nhập URL cần kiểm tra.");
-    if (/[\s\u0000-\u001f\u007f]/.test(value))
-      throw new Error("URL không được chứa khoảng trắng hoặc ký tự điều khiển.");
+        list.replaceChildren();
 
-    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value))
-      value = "https://" + value;
+        officialDomains.forEach(function (entry) {
+          var chip = document.createElement("span");
+          chip.className = "domain-chip";
 
-    let url;
-    try { url = new URL(value); }
-    catch (_) { throw new Error("URL không hợp lệ. Hãy kiểm tra lại địa chỉ."); }
+          var brand = document.createElement("strong");
+          brand.textContent = entry.brand;
 
-    if (!["http:", "https:"].includes(url.protocol))
-      throw new Error("Chỉ hỗ trợ URL http:// hoặc https://.");
-    if (!url.hostname || (!url.hostname.includes(".") && url.hostname !== "localhost"))
-      throw new Error("Tên miền có vẻ chưa đầy đủ.");
-    if (url.username || url.password)
-      throw new Error("URL chứa thông tin đăng nhập trước tên miền. Hãy thận trọng.");
+          var domain = document.createElement("span");
+          domain.textContent = entry.domain;
 
-    return url;
-  }
+          chip.appendChild(brand);
+          chip.appendChild(domain);
+          list.appendChild(chip);
+        });
+      }
 
-  function getBaseDomain(host) {
-    const h = host.toLowerCase().replace(/\.$/, "");
-    const labels = h.split(".");
-    const twoPart = ["com.vn","net.vn","org.vn","gov.vn","edu.vn","ac.vn","co.uk","org.uk","com.au","co.jp","com.br","co.nz"];
-    if (labels.length >= 3 && twoPart.includes(labels.slice(-2).join(".")))
-      return labels.slice(-3).join(".");
-    return labels.length >= 2 ? labels.slice(-2).join(".") : h;
-  }
-
-  function analyzeUrl(url) {
-    let score = 0;
-    const findings = [];
-    const host = url.hostname.toLowerCase().replace(/\.$/, "");
-    const path = (url.pathname + url.search + url.hash).toLowerCase();
-    const full = url.href.toLowerCase();
-
-    function add(points, icon, title, description) {
-      score += points;
-      findings.push({ icon, title, description });
-    }
-
-    if (url.protocol === "http:") {
-      add(12, "⚠️", "Sử dụng HTTP",
-        "Kết nối không dùng HTTPS. Đây là dấu hiệu cần thận trọng, nhưng không tự chứng minh website độc hại.");
-    } else {
-      add(0, "🔒", "Sử dụng HTTPS",
-        "HTTPS bảo vệ kết nối nhưng không xác minh chủ sở hữu hoặc độ an toàn của website.");
-    }
-
-    if (host.includes("xn--"))
-      add(22, "🌐", "Tên miền dùng Punycode",
-        "Tên miền có nhãn xn-- được mã hóa. Hãy kiểm tra kỹ ký tự hiển thị.");
-
-    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host))
-      add(18, "🧭", "Dùng địa chỉ IPv4 trực tiếp",
-        "URL dùng địa chỉ IP thay cho tên miền thông thường.");
-
-    const shorteners = ["bit.ly","tinyurl.com","t.co","is.gd","cutt.ly","rb.gy","rebrand.ly","ow.ly","buff.ly","shorturl.at"];
-    if (shorteners.includes(host))
-      add(12, "↗️", "Dịch vụ rút gọn URL",
-        "Đích đến thật có thể bị che khuất. Cần xác minh nguồn gửi trước khi truy cập.");
-
-    if ([".zip",".mov",".click",".top",".xyz",".work",".country",".gq",".tk",".rest"].some(t => host.endsWith(t)))
-      add(8, "🔎", "Đuôi tên miền cần xem xét",
-        "Đuôi miền này có thể xuất hiện trong URL rủi ro nhưng không đủ để kết luận độc hại.");
-
-    const normalized = (host + " " + path).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const categoryRules = [
-      { label:"cá cược / cờ bạc", regex:/(^|[^a-z0-9])(casino|betting|sportsbook|poker|gambling|wager|ca[-_ ]?cuoc|caocuoc|so[-_ ]?de|xoc[-_ ]?dia|tai[-_ ]?xiu)([^a-z0-9]|$)/i },
-      { label:"nội dung người lớn", regex:/(^|[^a-z0-9])(porn|xxx|adult[-_ ]?content|sex[-_ ]?video|webcam[-_ ]?sex|phim[-_ ]?sex|khieu dam|18plus)([^a-z0-9]|$)/i },
-      { label:"lừa đảo / giả mạo", regex:/(^|[^a-z0-9])(phishing|scam|fraud|fake[-_ ]?login|steal[-_ ]?password|xac[-_ ]?minh[-_ ]?tai[-_ ]?khoan|nhan[-_ ]?qua|trung[-_ ]?thuong|claim[-_ ]?prize)([^a-z0-9]|$)/i }
-    ];
-    categoryRules.forEach(rule => {
-      if (rule.regex.test(normalized))
-        add(18, "🚩", "Từ khóa liên quan đến " + rule.label,
-          "URL chứa từ khóa đáng chú ý. Cần kiểm tra ngữ cảnh; từ khóa không tự chứng minh website độc hại.");
-    });
-
-    const words = ["login","verify","verification","password","signin","account","secure","update","wallet","banking","gift","prize","free","claim","urgent","confirm","reset","credential","payment"];
-    const matched = words.filter(word => path.includes(word));
-    if (matched.length)
-      add(Math.min(16, matched.length * 4), "🔑", "Có từ khóa thường gặp trong URL lừa đảo",
-        "Từ khóa phát hiện: " + matched.join(", ") + ". Các từ này cũng có thể xuất hiện trên website hợp pháp.");
-
-    if (host.split(".").length >= 5)
-      add(8, "🧩", "Tên miền có nhiều cấp",
-        "Hãy xác định tên miền đăng ký thực tế, không chỉ dựa vào phần đầu của địa chỉ.");
-    if (host.length > 45)
-      add(8, "📏", "Tên miền dài bất thường",
-        "Tên miền dài có thể gây khó nhận diện hoặc bắt chước tên miền khác.");
-    if (full.length > 180)
-      add(4, "🧵", "URL rất dài",
-        "URL dài có thể chứa nhiều tham số khó đọc. Tránh chia sẻ URL chứa token hoặc mã phiên.");
-    if (url.search.length > 100)
-      add(4, "🔗", "Chuỗi tham số dài",
-        "URL có chuỗi tham số dài. Không chia sẻ URL chứa thông tin riêng tư.");
-
-    const base = getBaseDomain(host);
-    const exact = trustedDomains.some(d => host === d || host.endsWith("." + d));
-    const suspiciousBrand = trustedDomains.find(d => {
-      const brand = d.split(".")[0];
-      return base !== d && host.replace(/[^a-z0-9]/g, "").includes(brand);
-    });
-
-    if (suspiciousBrand) {
-      add(28, "🛡️", "Có thể giả mạo tên miền",
-        "Tên miền nhắc đến tên miền tham khảo " + suspiciousBrand +
-        " nhưng không khớp chính xác. Hãy xác minh qua kênh chính thức.");
-    } else if (exact) {
-      add(0, "📚", "Khớp tên miền tham khảo",
-        "Tên miền khớp dữ liệu tham khảo tích hợp. Điều này không chứng minh mọi trang con đều an toàn.");
-    } else {
-      add(0, "📚", "Chưa khớp dữ liệu tham khảo",
-        "Tên miền chưa khớp dữ liệu tham khảo. Điều này không tự động có nghĩa là độc hại.");
-    }
-
-    if (findings.every(f => f.title === "Sử dụng HTTPS" ||
-        f.title === "Khớp tên miền tham khảo" ||
-        f.title === "Chưa khớp dữ liệu tham khảo")) {
-      add(0, "✅", "Chưa thấy dấu hiệu rõ ràng",
-        "Không phát hiện dấu hiệu phổ biến trong các phép kiểm tra cục bộ. Công cụ chưa kiểm tra danh tiếng URL từ nguồn bên ngoài.");
-    }
-
-    score = Math.max(0, Math.min(100, score));
-    let level, title, summary, color;
-    if (score >= 60) {
-      level = "RỦI RO CAO"; title = "Liên kết có nhiều dấu hiệu đáng ngờ";
-      summary = "Không nên mở liên kết hoặc nhập thông tin trước khi xác minh.";
-      color = "#ff657c";
-    } else if (score >= 30) {
-      level = "CẦN THẬN TRỌNG"; title = "Phát hiện dấu hiệu cần xem xét";
-      summary = "Hãy xác minh tên miền qua kênh chính thức trước khi tiếp tục.";
-      color = "#ffca68";
-    } else {
-      level = "RỦI RO THẤP THEO PHÂN TÍCH CỤC BỘ";
-      title = "Ít dấu hiệu đáng ngờ được phát hiện";
-      summary = "Đây không phải xác nhận website an toàn; URL độc hại có thể không thể hiện dấu hiệu rõ ràng.";
-      color = "#5ce1a0";
-    }
-    return { score, level, title, summary, color, findings, url:url.href };
-  }
-
-  function renderResult(result) {
-    $("score").textContent = result.score;
-    $("resultTitle").textContent = result.title;
-    $("resultSummary").textContent = result.summary;
-    $("checkedUrl").textContent = result.url;
-    $("riskTag").textContent = result.level;
-    $("riskTag").style.color = result.color;
-    $("riskTag").style.backgroundColor = result.color + "20";
-    $("scoreCircle").style.setProperty("--score-color", result.color);
-    $("scoreCircle").style.setProperty("--progress", result.score * 3.6 + "deg");
-
-    const list = $("detailList");
-    list.replaceChildren();
-    result.findings.forEach(f => {
-      const item = document.createElement("div");
-      item.className = "detail-item";
-      const icon = document.createElement("div");
-      icon.className = "detail-icon";
-      icon.textContent = f.icon;
-      const content = document.createElement("div");
-      const title = document.createElement("strong");
-      title.textContent = f.title;
-      const desc = document.createElement("p");
-      desc.textContent = f.description;
-      content.append(title, desc);
-      item.append(icon, content);
-      list.appendChild(item);
-    });
-
-    lastReport = [
-      "LINKGUARD AI - BÁO CÁO PHÂN TÍCH URL",
-      "URL: " + result.url,
-      "Điểm rủi ro heuristic: " + result.score + "/100",
-      "Mức đánh giá: " + result.level,
-      "Kết luận: " + result.title,
-      "Nhận xét: " + result.summary,
-      "",
-      "CHI TIẾT:",
-      ...result.findings.map((f,i) => (i+1)+". "+f.title+"\n"+f.description),
-      "",
-      "Lưu ý: Điểm số heuristic không phải xác minh website."
-    ].join("\n");
-
-    $("resultPanel").classList.add("show");
-    $("resultPanel").scrollIntoView({ behavior:"smooth", block:"start" });
-  }
-
-  $("scanForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const button = $("scanButton");
-    const status = $("scanStatus");
-    button.disabled = true;
-    status.textContent = "Đang phân tích URL…";
-    $("resultPanel").classList.remove("show");
-
-    try {
-      const url = normalizeUrl($("urlInput").value);
-      const result = analyzeUrl(url);
-      renderResult(result);
-      status.textContent = "Đã hoàn tất phân tích cục bộ.";
-    } catch (error) {
-      status.textContent = error.message || "Không thể phân tích URL.";
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  document.querySelectorAll("[data-example]").forEach(button => {
-    button.addEventListener("click", function() {
-      $("urlInput").value = button.dataset.example;
-      $("urlInput").focus();
-      $("scanStatus").textContent = "Đã điền URL mẫu. Nhấn “Phân tích URL” để kiểm tra.";
-    });
-  });
-
-  $("clearResult").addEventListener("click", function() {
-    $("resultPanel").classList.remove("show");
-    $("urlInput").value = "";
-    $("scanStatus").textContent = "Đã xóa kết quả phân tích.";
-    lastReport = "";
-  });
-
-  $("copyReport").addEventListener("click", async function() {
-    if (!lastReport) {
-      $("scanStatus").textContent = "Chưa có báo cáo để sao chép.";
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(lastReport);
-      $("scanStatus").textContent = "Đã sao chép báo cáo.";
-    } catch (_) {
-      const area = document.createElement("textarea");
-      area.value = lastReport;
-      area.style.position = "fixed";
-      area.style.opacity = "0";
-      document.body.appendChild(area);
-      area.select();
-      let copied = false;
-      try { copied = document.execCommand("copy"); } catch (_) {}
-      area.remove();
-      $("scanStatus").textContent = copied
-        ? "Đã sao chép báo cáo."
-        : "Không thể tự sao chép. Hãy thử lại trên trang HTTPS.";
-    }
-  });
-
-  function readReviews() {
-    try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      return Array.isArray(data) ? data : [];
-    } catch (_) { return []; }
-  }
-
-  function renderReviews() {
-    const list = $("reviewList");
-    list.replaceChildren();
-    const reviews = readReviews();
-    if (!reviews.length) {
-      const empty = document.createElement("p");
-      empty.className = "muted small";
-      empty.textContent = "Chưa có đánh giá nào trên trình duyệt này.";
-      list.appendChild(empty);
-      return;
-    }
-    reviews.slice().reverse().forEach(review => {
-      const card = document.createElement("article");
-      card.className = "review";
-      const header = document.createElement("div");
-      header.className = "review-header";
-      const name = document.createElement("strong");
-      name.textContent = review.name || "Người dùng";
-      const stars = document.createElement("span");
-      stars.className = "stars";
-      const rating = Math.max(1, Math.min(5, Number(review.rating) || 5));
-      stars.textContent = "★".repeat(rating) + "☆".repeat(5-rating);
-      header.append(name, stars);
-      const message = document.createElement("p");
-      message.textContent = review.text || "";
-      const date = document.createElement("div");
-      date.className = "muted small";
-      date.style.marginTop = "8px";
-      date.textContent = review.date || "";
-      card.append(header, message, date);
-      list.appendChild(card);
-    });
-  }
-
-  $("reviewForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const message = $("reviewText").value.trim();
-    if (!message) {
-      $("reviewStatus").textContent = "Vui lòng nhập nội dung đánh giá.";
-      $("reviewText").focus();
-      return;
-    }
-    const reviews = readReviews();
-    reviews.push({
-      name:$("reviewName").value.trim().slice(0,40) || "Người dùng",
-      rating:Number($("reviewRating").value),
-      text:message.slice(0,500),
-      date:new Date().toLocaleString("vi-VN")
-    });
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
-      $("reviewText").value = "";
-      $("reviewStatus").textContent = "Đã lưu đánh giá trên thiết bị này.";
+      renderDomainLibrary();
       renderReviews();
-    } catch (_) {
-      $("reviewStatus").textContent = "Không thể lưu đánh giá trong trình duyệt này.";
-    }
-  });
 
-  $("clearReviews").addEventListener("click", function() {
-    if (!window.confirm("Bạn có chắc muốn xóa tất cả đánh giá trên trình duyệt này?")) return;
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      renderReviews();
-      $("reviewStatus").textContent = "Đã xóa đánh giá trên thiết bị này.";
-    } catch (_) {
-      $("reviewStatus").textContent = "Không thể xóa dữ liệu lưu trữ.";
-    }
-  });
-
-  renderReviews();
-  console.info("[LINKGUARD AI] Khởi tạo thành công.");
-})();
-</script>
+      console.info("[LINKGUARD AI] Khởi tạo thành công.");
+    })();
+  </script>
 </body>
 </html>
