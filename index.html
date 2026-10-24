@@ -490,6 +490,7 @@
       <div class="status" id="scanStatus" role="status" aria-live="polite"></div>
     </section>
 
+    <!-- Thư viện tên miền không hiển thị trên giao diện. -->
 
     <section class="panel result" id="resultPanel" aria-labelledby="resultTitle">
       <div class="result-top">
@@ -594,7 +595,7 @@
     <div class="container">
       <div class="footer-brand">LINKGUARD AI</div>
       <div>Trình phân tích URL và đối chiếu tên miền tham khảo</div>
-      <div style="margin-top:5px">Made by Hồ Nguyễn Anh Duy - 9A2 - TRƯỜNG THCS & THPT TÂY SƠN, PHƯỜNG XUÂN HƯƠNG - ĐÀ LẠT, LÂM ĐỒNG · 2026</div>
+      <div style="margin-top:5px">Made by Anh Duy 9A2 TS · 2026</div>
       <div style="margin-top:10px">
         Công cụ hỗ trợ tham khảo, không thay thế hệ thống phát hiện mã độc chuyên dụng.
       </div>
@@ -687,7 +688,6 @@
         { brand: "Zalo", domain: "zalo.me" },
         { brand: "VnExpress", domain: "vnexpress.net" },
         { brand: "Cổng Thông tin Chính phủ", domain: "chinhphu.vn" }
-        { brand: "Ngân hàng Agribank", domain: "agribank.com.vn" }
       ];
 
       function getBaseDomain(host) {
@@ -1007,7 +1007,7 @@
           result.findings.map(function (finding, index) {
             return (index + 1) + ". " + finding.title + "\n" + finding.description;
           }).join("\n\n") +
-          "\n\nLưu ý: Điểm số thấp không đồng nghĩa với việc website an toàn tuyệt đối!";
+          "\n\nLưu ý: Điểm số là heuristic, không phải kết quả xác minh website.";
 
         if (panel) {
           panel.classList.add("show");
