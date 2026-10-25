@@ -1259,30 +1259,33 @@
         }
       });
 
-      function renderDomainLibrary() {
-        var list = getElement("domainLibraryList");
-        if (!list) return;
+function renderDomainLibrary() {
+    var list = getElement("domainLibraryList");
+    if (!list) return;
 
-        list.replaceChildren();
+    list.replaceChildren();
 
-        officialDomains.forEach(function (entry) {
-          var chip = document.createElement("span");
-          chip.className = "domain-chip";
+    officialDomains.forEach(function (entry) {
+        var chip = document.createElement("span");
+        chip.className = "domain-chip";
 
-          var brand = document.createElement("strong");
-          brand.textContent = entry.brand;
+        var brand = document.createElement("strong");
+        brand.textContent = entry.brand;
 
-          var domain = document.createElement("span");
-          domain.textContent = entry.domain;
+        var domain = document.createElement("span");
+        domain.textContent = entry.domain;
 
-          chip.appendChild(brand);
-          chip.appendChild(domain);
-          list.appendChild(chip);
-        });
-      renderDomainLibrary();
-      renderReviews();
-      console.info("[LINKGUARD AI] Khởi tạo thành công.");
-    }();
-  </script>
+        chip.appendChild(brand);
+        chip.appendChild(domain);
+        list.appendChild(chip);
+    });
+}
+
+renderDomainLibrary();
+renderReviews();
+
+console.info("[LINKGUARD AI] Khởi tạo thành công.");
+})();
+</script>
 </body>
 </html>
