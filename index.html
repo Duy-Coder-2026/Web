@@ -31,6 +31,14 @@ h2.section{color:var(--d);margin:30px 0 15px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
 .card,.panel{background:white;padding:20px;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}
 .card h3{color:var(--g);margin-top:5px}
+.post-card{padding:0;overflow:hidden;cursor:pointer;transition:.18s;border:1px solid var(--line)}
+.post-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px #173d2618}
+.post-card .post-body{padding:16px 18px}
+.post-card .postimg{display:block;width:100%;height:190px;object-fit:cover;border-radius:0}
+.post-card .post-excerpt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.post-detail-image{width:100%;max-height:480px;object-fit:contain;border-radius:10px;background:#f1f4f1}
+.post-detail-content{white-space:pre-wrap;line-height:1.75;font-size:15px;overflow-wrap:anywhere}
+.role-chip{display:inline-block;padding:4px 8px;border-radius:20px;background:#eaf4ed;color:var(--g);font-size:11px;font-weight:bold}
 .card p{font-size:14px;color:#617168;white-space:pre-wrap}
 .card img.postimg{width:100%;height:170px;object-fit:cover;border-radius:8px}
 .muted{font-size:12px;color:#829087}
@@ -68,6 +76,7 @@ td select{padding:7px;border:1px solid var(--line);border-radius:6px}
 .close{float:right;border:0;background:none;font-size:24px}
 footer{background:var(--d);color:white;text-align:center;padding:30px 15px;margin-top:45px}
 footer p{font-size:13px;color:#c7dfcf}
+.hidden{display:none!important}
 @media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.nav{justify-content:center}.nav button{padding:12px 9px;font-size:12px}header h1{font-size:16px}.hero h2{font-size:25px}}
 @media(max-width:450px){.grid{grid-template-columns:1fr}.head{align-items:flex-start}.logo{width:45px;height:45px}.head-right{gap:3px}.head-right .btn{font-size:11px;padding:8px}}
 </style>
@@ -134,7 +143,9 @@ db.questions ||= [];
 db.feedback ||= [];
 
 db.users.forEach(u=>{
+ u.email=String(u.email||"").trim().toLowerCase();
  u.role ||= "USER";
+ if(u.role==="EDITOR")u.role="MODERATION";
  u.name ||= "";
  u.avatar ||= "";
  u.locked ||= false;
@@ -142,8 +153,11 @@ db.users.forEach(u=>{
 
 // Nhận diện tài khoản ADMIN chính
 function roleOf(email){
- if(email?.toLowerCase()===ADMIN_EMAIL)return "ADMIN";
- return db.users.find(u=>u.email===email)?.role||"USER";
+ const normalized=String(email||"").trim().toLowerCase();
+ if(normalized===ADMIN_EMAIL)return "ADMIN";
+ const found=db.users.find(u=>String(u.email||"").trim().toLowerCase()===normalized);
+ const role=found?.role||"USER";
+ return role==="EDITOR"?"MODERATION":role;
 }
 
 function save(){
@@ -157,7 +171,7 @@ function user(){
  return db.users.find(u=>u.email===currentUser?.email);
 }
 function isAdmin(){return !!currentUser&&roleOf(currentUser.email)==="ADMIN"}
-function canEdit(){return isAdmin()||roleOf(currentUser?.email)==="EDITOR"}
+function canEdit(){return !!currentUser&&["ADMIN","MODERATION"].includes(roleOf(currentUser.email))}
 function escapeHTML(v){
  return String(v??"").replace(/[&<>"']/g,c=>({
  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -241,17 +255,19 @@ function homePage(){
 function cards(items){
  if(!items.length)return `<div class="empty">Chưa có nội dung.</div>`;
  return `<div class="grid">${items.map(p=>`
- <div class="card">
-  ${p.image?`<img class="postimg" src="${escapeHTML(p.image)}" onerror="this.style.display='none'">`:""}
-  <span class="tag">${p.type==="activity"?"HOẠT ĐỘNG":"BÀI VIẾT"}</span>
-  <p class="muted">${escapeHTML(p.date)}</p>
-  <h3>${escapeHTML(p.title)}</h3>
-  <p>${escapeHTML(p.content)}</p>
-  ${canEdit()?`<div class="actions">
-   <button class="btn sm" onclick="editPost(${p.id})">Sửa</button>
-   <button class="btn red sm" onclick="deleteRecord('posts',${p.id})">Xóa</button>
-  </div>`:""}
- </div>`).join("")}</div>`;
+ <article class="card post-card" onclick="viewPost(${p.id})" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();viewPost(${p.id})}">
+  ${p.image?`<img class="postimg" src="${escapeHTML(p.image)}" alt="Ảnh bài đăng" onerror="this.style.display='none'">`:""}
+  <div class="post-body"><span class="tag">${p.type==="activity"?"HOẠT ĐỘNG":"BÀI VIẾT"}</span>
+  <p class="muted">${escapeHTML(p.date||"")}${p.author?` · ${escapeHTML(p.author)}`:""}</p>
+  <h3>${escapeHTML(p.title)}</h3><p class="post-excerpt">${escapeHTML(p.content)}</p>
+  <span class="muted" style="color:var(--g);font-weight:bold">Xem chi tiết →</span>
+  ${canEdit()?`<div class="actions" onclick="event.stopPropagation()"><button class="btn sm" onclick="editPost(${p.id})">Sửa</button><button class="btn red sm" onclick="deleteRecord('posts',${p.id})">Xóa</button></div>`:""}</div>
+ </article>`).join("")}</div>`;
+}
+
+function viewPost(id){
+ const p=db.posts.find(x=>x.id===id);if(!p)return;
+ showModal(p.title,`<span class="tag">${p.type==="activity"?"HOẠT ĐỘNG":"BÀI VIẾT"}</span><p class="muted">${escapeHTML(p.date||"")}${p.author?` · ${escapeHTML(p.author)}`:""}</p>${p.image?`<img class="post-detail-image" src="${escapeHTML(p.image)}" alt="Ảnh bài đăng">`:""}<div class="post-detail-content" style="margin-top:16px">${escapeHTML(p.content)}</div>${canEdit()?`<div class="actions"><button class="btn" onclick="closeModal();editPost(${p.id})">Chỉnh sửa</button><button class="btn red" onclick="closeModal();deleteRecord('posts',${p.id})">Xóa bài</button></div>`:""}`);
 }
 
 // ===================================
@@ -271,26 +287,44 @@ function openPost(type,old=null){
  showModal(old?"Chỉnh sửa nội dung":"Đăng nội dung",`
  <div class="field"><label>Tiêu đề</label><input id="pTitle" maxlength="150" value="${escapeHTML(old?.title||"")}"></div>
  <div class="field"><label>Nội dung</label><textarea id="pContent">${escapeHTML(old?.content||"")}</textarea></div>
- <div class="field"><label>Link ảnh (nếu có)</label><input id="pImage" value="${escapeHTML(old?.image||"")}" placeholder="https://..."></div>
- <button class="btn" onclick="savePost('${type}',${old?.id||"null"})">Lưu nội dung</button>`);
+ <div class="field"><label>Hình ảnh (Upload từ máy tính)</label><input type="file" id="pImageFile" accept="image/png,image/jpeg,image/webp"></div>
+ ${old?.image?`<div class="field"><label>Ảnh hiện tại</label><img src="${escapeHTML(old.image)}" style="width:100%;max-height:180px;object-fit:contain;border-radius:8px"><label style="font-weight:normal"><input type="checkbox" id="removePostImage"> Xóa ảnh hiện tại</label></div>`:""}
+ <p class="muted">Ảnh PNG, JPG hoặc WEBP, tối đa 5MB. Ảnh được tối ưu trước khi lưu.</p>
+ <button class="btn" onclick="savePost('${type}',${old?.id||"null"})">Đăng bài</button>`);
 }
 
 function editPost(id){
  const p=db.posts.find(x=>x.id===id);
  if(p)openPost(p.type,p);
 }
+
 function savePost(type,id){
- const title=document.getElementById("pTitle").value.trim();
- const content=document.getElementById("pContent").value.trim();
- const image=document.getElementById("pImage").value.trim();
- if(!title||!content)return alert("Vui lòng nhập đầy đủ nội dung.");
- if(id){
-  const p=db.posts.find(x=>x.id===id);
-  if(p)Object.assign(p,{title,content,image});
- }else{
-  db.posts.push({id:Date.now(),type,title,content,image,date:new Date().toLocaleDateString("vi-VN")});
- }
- save();closeModal();render();
+ if(!canEdit())return alert("Bạn không có quyền đăng nội dung.");
+ const title=document.getElementById("pTitle").value.trim(),content=document.getElementById("pContent").value.trim(),file=document.getElementById("pImageFile").files[0];
+ if(!title||!content)return alert("Vui lòng nhập tiêu đề và nội dung.");
+ if(file&&(!file.type.startsWith("image/")||file.size>5*1024*1024))return alert("Chỉ nhận ảnh PNG, JPG, WEBP tối đa 5MB.");
+ const finish=image=>{
+  const old=id?db.posts.find(x=>x.id===id):null,remove=document.getElementById("removePostImage")?.checked;
+  const finalImage=remove?"":(image===null?(old?.image||""):image);
+  if(old)Object.assign(old,{title,content,image:finalImage});
+  else db.posts.push({id:Date.now(),type,title,content,image:finalImage,date:new Date().toLocaleString("vi-VN"),author:user()?.name||currentUser.email});
+  try{save();closeModal();render();alert(id?"Đã cập nhật bài đăng.":"Đăng bài thành công!");}catch(e){alert("Không đủ dung lượng lưu trữ cho ảnh. Hãy chọn ảnh nhỏ hơn.");}
+ };
+ if(!file)return finish(null);
+ const reader=new FileReader();
+ reader.onload=e=>{
+  const img=new Image();
+  img.onload=()=>{
+   const c=document.createElement("canvas"),max=1200,scale=Math.min(1,max/Math.max(img.width,img.height));
+   c.width=Math.round(img.width*scale);
+   c.height=Math.round(img.height*scale);
+   c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+   finish(c.toDataURL("image/jpeg",.78));
+  };
+  img.onerror=()=>alert("Không thể đọc ảnh đã chọn.");
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
 }
 
 // ===================================
@@ -325,6 +359,7 @@ function sendQuestion(){
  db.questions.push({id:Date.now(),text,author:user()?.name||currentUser.email,date:new Date().toLocaleString("vi-VN"),answer:""});
  save();render();alert("Đã gửi câu hỏi.");
 }
+
 function answerQuestion(id){
  if(!isAdmin())return;
  const q=db.questions.find(x=>x.id===id);
@@ -355,6 +390,7 @@ function feedbackPage(){
  </div>`).join("")||`<div class="empty">Chưa có góp ý.</div>`}
  `:""}`;
 }
+
 function sendFeedback(){
  if(!currentUser)return alert("Hãy đăng nhập trước.");
  const name=document.getElementById("fName").value.trim();
@@ -456,7 +492,8 @@ function adminPage(){
   <div class="stat"><strong>${db.feedback.length}</strong><span>Góp ý</span></div>
  </div>
  <h2 class="section">Quản lý thành viên và phân quyền</h2>
- <div class="notice">Chọn vai trò và nhấn Lưu để thay đổi quyền. Tài khoản ADMIN chính được bảo vệ.</div>
+ <div class="notice">Chỉ ADMIN chính được cấp hoặc gỡ quyền. Tài khoản ADMIN chính được bảo vệ.</div>
+ <button class="btn" onclick="openPermissionModal()">＋ Thêm / Xóa quyền</button>
  <div class="tablebox"><table>
  <thead><tr><th>Thành viên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
  <tbody>
@@ -467,9 +504,9 @@ function adminPage(){
   <td>
   ${u.email===ADMIN_EMAIL?"<b>ADMIN CHÍNH</b>":`
    <select id="role${u.id}">
-    <option value="USER" ${u.role==="USER"?"selected":""}>Thành viên</option>
-    <option value="EDITOR" ${u.role==="EDITOR"?"selected":""}>Biên tập viên</option>
-    <option value="ADMIN" ${u.role==="ADMIN"?"selected":""}>Admin</option>
+    <option value="USER" ${roleOf(u.email)==="USER"?"selected":""}>User</option>
+    <option value="MODERATION" ${roleOf(u.email)==="MODERATION"?"selected":""}>Moderation</option>
+    <option value="ADMIN" ${roleOf(u.email)==="ADMIN"?"selected":""}>Admin</option>
    </select>`}
   </td>
   <td>${u.locked?"🔒 Đã khóa":"🟢 Hoạt động"}</td>
@@ -495,12 +532,52 @@ function adminPage(){
 }
 
 function changeRole(id){
- if(!isAdmin())return;
- const u=db.users.find(x=>x.id===id);
- if(!u||u.email===ADMIN_EMAIL)return;
+ if(!isAdmin()||currentUser.email.toLowerCase()!==ADMIN_EMAIL)return alert("Không có quyền thực hiện.");
+ const u=db.users.find(x=>x.id===id);if(!u||u.email.toLowerCase()===ADMIN_EMAIL)return;
  u.role=document.getElementById("role"+id).value;
  save();render();alert("Đã cập nhật quyền thành công.");
 }
+
+function openPermissionModal(){
+ if(!isAdmin()||currentUser.email.toLowerCase()!==ADMIN_EMAIL)return alert("Chỉ ADMIN chính được quản lý quyền.");
+ showModal("Thêm / Xóa quyền",`
+ <div class="field"><label>Email tài khoản</label><input id="permissionEmail" type="email" placeholder="example@gmail.com"></div>
+ <div class="field"><label>Quyền hạn</label>
+ <select id="permissionRole">
+  <option value="ADMIN">Admin</option>
+  <option value="USER">User</option>
+  <option value="MODERATION">Moderation</option>
+ </select></div>
+ <div class="actions">
+  <button class="btn" onclick="applyPermission()">Cấp / Cập nhật quyền</button>
+  <button class="btn red" onclick="removePermission()">Xóa quyền (đưa về User)</button>
+ </div>
+ <p class="muted">Tài khoản cần đăng ký trên website trước khi được phân quyền.</p>`);
+}
+
+function applyPermission(){
+ if(!isAdmin()||currentUser.email.toLowerCase()!==ADMIN_EMAIL)return;
+ const email=document.getElementById("permissionEmail").value.trim().toLowerCase();
+ const role=document.getElementById("permissionRole").value;
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return alert("Email không hợp lệ.");
+ if(email===ADMIN_EMAIL)return alert("Đây là ADMIN chính, không thể thay đổi quyền.");
+ const target=db.users.find(u=>u.email.toLowerCase()===email);
+ if(!target)return alert("Chưa tìm thấy tài khoản. Hãy yêu cầu người dùng đăng ký trước.");
+ target.role=role;
+ save();closeModal();render();alert("Đã cập nhật quyền cho "+email+".");
+}
+
+function removePermission(){
+ if(!isAdmin()||currentUser.email.toLowerCase()!==ADMIN_EMAIL)return;
+ const email=document.getElementById("permissionEmail").value.trim().toLowerCase();
+ if(!email)return alert("Hãy nhập email tài khoản.");
+ if(email===ADMIN_EMAIL)return alert("Không thể gỡ quyền ADMIN chính.");
+ const target=db.users.find(u=>u.email.toLowerCase()===email);
+ if(!target)return alert("Không tìm thấy tài khoản.");
+ target.role="USER";
+ save();closeModal();render();alert("Đã gỡ quyền. Tài khoản hiện là User.");
+}
+
 function toggleLock(id){
  if(!isAdmin())return;
  const u=db.users.find(x=>x.id===id);
@@ -508,6 +585,7 @@ function toggleLock(id){
  u.locked=!u.locked;
  save();render();
 }
+
 function deleteUser(id){
  if(!isAdmin())return;
  const u=db.users.find(x=>x.id===id);
@@ -516,8 +594,10 @@ function deleteUser(id){
  db.users=db.users.filter(x=>x.id!==id);
  save();render();
 }
+
 function deleteRecord(collection,id){
- if(!isAdmin())return alert("Không có quyền.");
+ const allowed=collection==="posts"?canEdit():isAdmin();
+ if(!allowed)return alert("Không có quyền.");
  if(!confirm("Bạn chắc chắn muốn xóa?"))return;
  db[collection]=db[collection].filter(x=>x.id!==id);
  save();render();
@@ -532,7 +612,10 @@ function showModal(title,html){
  document.getElementById("modalBody").innerHTML=html;
  document.getElementById("modal").classList.add("show");
 }
-function closeModal(){document.getElementById("modal").classList.remove("show")}
+
+function closeModal(){
+ document.getElementById("modal").classList.remove("show");
+}
 
 function auth(mode){
  const html=`
