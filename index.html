@@ -3,148 +3,100 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tổ dân phố Trần Phú | Xuân Hương - Đà Lạt</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tổ dân phố Trần Phú - Đà Lạt</title>
 <style>
-:root{
- --green:#176b45;
- --dark:#104c32;
- --light:#edf6f0;
- --gold:#e5b94f;
- --text:#26352c;
- --muted:#718078;
- --white:#fff;
- --bg:#f5f7f5;
- --border:#e1e9e3;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+:root{--g:#176b45;--d:#104c32;--bg:#f4f7f5;--line:#e0e9e2;--gold:#e5b94f}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#26352c}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-header{
- background:linear-gradient(120deg,#104c32,#208153);
- color:white;padding:24px 5%;
-}
-.header-inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:18px}
-.logo{
- width:65px;height:65px;border-radius:50%;background:white;
- color:var(--green);display:grid;place-items:center;
- font-size:29px;font-weight:bold;flex-shrink:0;
-}
-.header-title h1{font-size:23px;letter-spacing:.5px}
-.header-title p{font-size:13px;color:#d5eadc}
-.header-right{margin-left:auto}
-.header-right button{background:var(--gold);color:#28372d;border:0;padding:11px 17px;border-radius:7px;font-weight:bold}
-nav{background:white;box-shadow:0 3px 12px #0000000b;position:sticky;top:0;z-index:10}
-.nav-inner{max-width:1200px;margin:auto;display:flex;flex-wrap:wrap;align-items:center;padding:0 12px}
-.nav-inner button{
- border:0;background:white;padding:17px 15px;color:#3c5144;
- font-weight:bold;border-bottom:3px solid transparent;
-}
-.nav-inner button:hover,.nav-inner button.active{color:var(--green);border-bottom-color:var(--green)}
-main{max-width:1200px;margin:27px auto;padding:0 18px;min-height:65vh}
-.hero{
- border-radius:15px;padding:55px 35px;
- background:linear-gradient(100deg,#104c32eF,#176b45dd),url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1500") center/cover;
- color:white;
-}
-.hero small{color:#f5d77e;font-weight:bold;letter-spacing:2px}
-.hero h2{font-size:34px;max-width:680px;margin:12px 0}
-.hero p{max-width:650px;color:#e5f2e9}
-.hero .hero-btn{margin-top:22px;background:var(--gold);border:0;padding:12px 22px;border-radius:7px;font-weight:bold}
-.section-title{margin:32px 0 17px;font-size:23px;color:var(--dark)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
-.card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 3px 12px #00000006}
-.card h3{color:var(--green);margin-bottom:8px}
-.card p{color:#647268;font-size:14px}
-.card .date{font-size:12px;color:var(--muted);margin-bottom:8px}
-.card img{width:100%;height:165px;object-fit:cover;border-radius:8px;margin-bottom:12px}
-.tag{display:inline-block;background:var(--light);color:var(--green);padding:4px 9px;border-radius:5px;font-size:11px;font-weight:bold;margin-bottom:10px}
-.empty{text-align:center;padding:40px;color:var(--muted);background:white;border-radius:10px}
-.page-heading{margin-bottom:22px}
-.page-heading h2{font-size:27px;color:var(--dark)}
-.page-heading p{color:var(--muted)}
-.btn{border:0;border-radius:7px;padding:10px 15px;background:var(--green);color:white;font-weight:bold}
-.btn:hover{filter:brightness(.92)}
-.btn.secondary{background:#e9f2eb;color:var(--green)}
-.btn.danger{background:#b93838}
+header{background:linear-gradient(120deg,var(--d),#268255);color:white;padding:22px 5%}
+.head{max-width:1200px;margin:auto;display:flex;align-items:center;gap:15px}
+.logo{width:58px;height:58px;border-radius:50%;background:white;color:var(--g);display:grid;place-items:center;font-size:23px;font-weight:bold;overflow:hidden;flex-shrink:0}
+.logo img{width:100%;height:100%;object-fit:cover}
+header h1{font-size:22px;margin:0 0 5px}
+header p{margin:0;font-size:12px;color:#d9eadf}
+.head-right{margin-left:auto;display:flex;gap:9px;align-items:center}
+nav{background:white;position:sticky;top:0;z-index:5;box-shadow:0 2px 10px #0001}
+.nav{max-width:1200px;margin:auto;display:flex;flex-wrap:wrap}
+.nav button{background:none;border:0;padding:16px 15px;color:#405448;font-weight:bold;border-bottom:3px solid transparent}
+.nav button.active,.nav button:hover{color:var(--g);border-color:var(--g)}
+main{max-width:1200px;margin:25px auto;padding:0 17px;min-height:65vh}
+.hero{padding:48px 30px;border-radius:15px;color:white;background:linear-gradient(110deg,#104c32ed,#176b45d9),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1400') center/cover}
+.hero small{color:#f5d77e;letter-spacing:2px}
+.hero h2{font-size:32px;max-width:700px}
+.hero p{max-width:650px}
+h2.section{color:var(--d);margin:30px 0 15px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card,.panel{background:white;padding:20px;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}
+.card h3{color:var(--g);margin-top:5px}
+.card p{font-size:14px;color:#617168;white-space:pre-wrap}
+.card img.postimg{width:100%;height:170px;object-fit:cover;border-radius:8px}
+.muted{font-size:12px;color:#829087}
+.tag{display:inline-block;background:#eaf4ed;color:var(--g);padding:5px 9px;border-radius:5px;font-size:11px;font-weight:bold}
+.btn{background:var(--g);color:white;border:0;padding:10px 15px;border-radius:7px;font-weight:bold}
+.btn:hover{filter:brightness(.9)}
 .btn.gold{background:var(--gold);color:#26352c}
-.btn.small{padding:6px 10px;font-size:12px}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
-.form-card{background:white;padding:23px;border:1px solid var(--border);border-radius:12px;max-width:650px;margin:auto}
-.form-group{margin:13px 0}
-.form-group label{display:block;font-weight:bold;font-size:13px;margin-bottom:6px}
-.form-group input,.form-group textarea,.form-group select{
- width:100%;border:1px solid #d5dfd8;border-radius:7px;padding:11px;background:white;
-}
-.form-group textarea{min-height:110px;resize:vertical}
-.form-group input:focus,.form-group textarea:focus{outline:2px solid #9bc7a8}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
-.stat{background:white;padding:18px;border-radius:10px;border:1px solid var(--border)}
-.stat strong{font-size:26px;color:var(--green);display:block}
-.stat span{font-size:12px;color:var(--muted)}
-.table-wrap{overflow-x:auto;background:white;border-radius:10px;border:1px solid var(--border)}
-table{border-collapse:collapse;width:100%;min-width:650px}
-th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border);font-size:13px}
-th{background:var(--light);color:var(--dark)}
-.role{font-size:11px;font-weight:bold;background:#eaf3ec;color:var(--green);padding:5px 8px;border-radius:5px}
-footer{background:#104c32;color:#e4f0e7;margin-top:50px;padding:32px 18px;text-align:center}
-footer strong{font-size:17px}
-footer p{font-size:13px;margin-top:6px;color:#c3d9c9}
-.modal-bg{
- position:fixed;inset:0;background:#0009;z-index:30;
- display:none;align-items:center;justify-content:center;padding:15px;
-}
-.modal-bg.show{display:flex}
-.modal{background:white;width:100%;max-width:450px;padding:25px;border-radius:13px;max-height:90vh;overflow:auto}
-.modal h2{color:var(--green);margin-bottom:15px}
-.modal-close{float:right;border:0;background:none;font-size:23px}
-.notice{padding:13px;border-radius:8px;background:#edf6f0;color:#245a38;margin:12px 0;font-size:13px}
-.hidden{display:none!important}
-@media(max-width:750px){
- .grid{grid-template-columns:1fr 1fr}
- .stats{grid-template-columns:1fr 1fr}
- .header-title h1{font-size:17px}
- .hero{padding:35px 22px}
- .hero h2{font-size:26px}
- .nav-inner{justify-content:center}
- .nav-inner button{padding:12px 9px;font-size:12px}
-}
-@media(max-width:480px){
- .grid{grid-template-columns:1fr}
- .header-inner{align-items:flex-start}
- .logo{width:47px;height:47px;font-size:22px}
- .header-right button{font-size:11px;padding:9px}
- .header-title h1{font-size:15px}
-}
+.btn.gray{background:#eaf1ec;color:var(--g)}
+.btn.red{background:#b93838}
+.btn.sm{padding:6px 9px;font-size:12px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.form{max-width:650px;margin:auto;background:white;padding:22px;border:1px solid var(--line);border-radius:12px}
+.field{margin:13px 0}
+.field label{display:block;font-weight:bold;font-size:13px;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid #d5dfd8;border-radius:7px;background:white}
+.field textarea{min-height:110px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.stat{background:white;padding:17px;border-radius:10px;border:1px solid var(--line)}
+.stat strong{display:block;font-size:25px;color:var(--g)}
+.stat span{font-size:12px;color:#718078}
+.tablebox{overflow-x:auto;background:white;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;min-width:680px}
+td,th{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
+th{background:#edf5ef;color:var(--d)}
+td select{padding:7px;border:1px solid var(--line);border-radius:6px}
+.avatar{width:100px;height:100px;border-radius:50%;background:#e8f0ea;display:grid;place-items:center;overflow:hidden;border:3px solid #d5e6da;font-size:32px;color:var(--g)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.profile-head{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.notice{padding:13px;background:#edf6f0;color:#245a38;border-radius:8px;margin:12px 0;font-size:13px}
+.empty{text-align:center;padding:30px;color:#78867d;background:white;border-radius:10px}
+.modalbg{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center;padding:15px}
+.modalbg.show{display:flex}
+.modal{background:white;border-radius:13px;padding:23px;width:100%;max-width:470px;max-height:90vh;overflow:auto}
+.modal h2{color:var(--g)}
+.close{float:right;border:0;background:none;font-size:24px}
+footer{background:var(--d);color:white;text-align:center;padding:30px 15px;margin-top:45px}
+footer p{font-size:13px;color:#c7dfcf}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.nav{justify-content:center}.nav button{padding:12px 9px;font-size:12px}header h1{font-size:16px}.hero h2{font-size:25px}}
+@media(max-width:450px){.grid{grid-template-columns:1fr}.head{align-items:flex-start}.logo{width:45px;height:45px}.head-right{gap:3px}.head-right .btn{font-size:11px;padding:8px}}
 </style>
 </head>
 <body>
 
 <header>
- <div class="header-inner">
-  <div class="logo">TP</div>
-  <div class="header-title">
+ <div class="head">
+  <div class="logo" id="headerLogo">TP</div>
+  <div>
    <h1>TỔ DÂN PHỐ TRẦN PHÚ</h1>
    <p>PHƯỜNG XUÂN HƯƠNG - ĐÀ LẠT</p>
    <p>Cổng thông tin điện tử cộng đồng dân cư</p>
   </div>
-  <div class="header-right">
-   <button id="accountBtn" onclick="openAuth()">Đăng nhập</button>
+  <div class="head-right">
+   <button class="btn gold" id="accountButton" onclick="accountAction()">Đăng nhập</button>
   </div>
  </div>
 </header>
 
-<nav>
- <div class="nav-inner" id="navigation">
-  <button class="active" onclick="go('home',this)">Trang chủ</button>
-  <button onclick="go('activities',this)">Hoạt động</button>
-  <button onclick="go('posts',this)">Bài viết</button>
-  <button onclick="go('questions',this)">Hỏi đáp</button>
-  <button onclick="go('feedback',this)">Góp ý</button>
-  <button id="adminNav" class="hidden" onclick="go('admin',this)">Quản trị</button>
- </div>
-</nav>
+<nav><div class="nav" id="nav">
+ <button class="active" onclick="go('home',this)">Trang chủ</button>
+ <button onclick="go('activities',this)">Hoạt động</button>
+ <button onclick="go('posts',this)">Bài viết</button>
+ <button onclick="go('questions',this)">Hỏi đáp</button>
+ <button onclick="go('feedback',this)">Góp ý</button>
+ <button id="profileNav" class="hidden" onclick="go('profile',this)">Tài khoản</button>
+ <button id="adminNav" class="hidden" onclick="go('admin',this)">Quản trị</button>
+</div></nav>
 
 <main id="app"></main>
 
@@ -152,465 +104,492 @@ footer p{font-size:13px;margin-top:6px;color:#c3d9c9}
  <strong>TỔ DÂN PHỐ TRẦN PHÚ</strong>
  <p>Phường Xuân Hương - Đà Lạt</p>
  <p>Đoàn kết - Văn minh - Nghĩa tình - Phát triển</p>
- <p style="margin-top:17px">© 2026 | Cổng thông tin điện tử cộng đồng</p>
+ <p>© 2026 - Cổng thông tin điện tử cộng đồng</p>
 </footer>
 
-<div class="modal-bg" id="authModal">
+<div class="modalbg" id="modal">
  <div class="modal">
-  <button class="modal-close" onclick="closeAuth()">×</button>
-  <h2 id="authTitle">Đăng nhập</h2>
-  <div id="authFields"></div>
+  <button class="close" onclick="closeModal()">×</button>
+  <h2 id="modalTitle">Thông tin</h2>
+  <div id="modalBody"></div>
  </div>
 </div>
 
 <script>
-// =====================================
-// CẤU HÌNH HỆ THỐNG
-// =====================================
+// ===================================
+// CƠ SỞ DỮ LIỆU THỬ NGHIỆM
+// ===================================
 
 const ADMIN_EMAIL="anhduydl2012@gmail.com";
-
-const DB_KEY="tranphu_website_v1";
-
-let db=JSON.parse(localStorage.getItem(DB_KEY)||"null");
+const KEY="tranphu_website_v1";
+let db=JSON.parse(localStorage.getItem(KEY)||"null");
 
 if(!db){
- db={
-  users:[],
-  posts:[
-   {
-    id:1,type:"post",
-    title:"Chào mừng đến với cổng thông tin Tổ dân phố Trần Phú",
-    content:"Đây là nơi cập nhật thông tin, hoạt động và các nội dung liên quan đến đời sống cộng đồng dân cư.",
-    date:new Date().toLocaleDateString("vi-VN")
-   }
-  ],
-  questions:[],
-  feedback:[]
- };
- save();
+ db={users:[],posts:[],questions:[],feedback:[]};
 }
 
-let currentUser=null;
-let currentPage="home";
+db.users ||= [];
+db.posts ||= [];
+db.questions ||= [];
+db.feedback ||= [];
 
-function save(){
- localStorage.setItem(DB_KEY,JSON.stringify(db));
-}
+db.users.forEach(u=>{
+ u.role ||= "USER";
+ u.name ||= "";
+ u.avatar ||= "";
+ u.locked ||= false;
+});
 
-function esc(s){
- return String(s??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
+// Nhận diện tài khoản ADMIN chính
 function roleOf(email){
- if(email.toLowerCase()===ADMIN_EMAIL)return "ADMIN";
+ if(email?.toLowerCase()===ADMIN_EMAIL)return "ADMIN";
  return db.users.find(u=>u.email===email)?.role||"USER";
 }
 
-function isAdmin(){
- return currentUser&&roleOf(currentUser.email)==="ADMIN";
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(db));
 }
 
-function canManage(){
- return isAdmin()||roleOf(currentUser?.email||"")==="EDITOR";
+let currentUser=null;
+let page="home";
+
+function user(){
+ return db.users.find(u=>u.email===currentUser?.email);
+}
+function isAdmin(){return !!currentUser&&roleOf(currentUser.email)==="ADMIN"}
+function canEdit(){return isAdmin()||roleOf(currentUser?.email)==="EDITOR"}
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+function avatarHTML(u,size=100){
+ return `<div class="avatar" style="width:${size}px;height:${size}px">${u?.avatar?`<img src="${u.avatar}" alt="Avatar">`:"👤"}</div>`;
 }
 
-function dateNow(){
- return new Date().toLocaleString("vi-VN");
-}
+// ===================================
+// GIAO DIỆN VÀ ĐIỀU HƯỚNG
+// ===================================
 
-// =====================================
-// ĐIỀU HƯỚNG
-// =====================================
-
-function go(page,button){
- currentPage=page;
- document.querySelectorAll("#navigation button").forEach(b=>b.classList.remove("active"));
- if(button)button.classList.add("active");
+function go(p,btn){
+ page=p;
+ document.querySelectorAll("#nav button").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
  render();
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function updateNavigation(){
+function updateNav(){
+ const u=user();
+ document.getElementById("profileNav").classList.toggle("hidden",!currentUser);
  document.getElementById("adminNav").classList.toggle("hidden",!isAdmin());
- document.getElementById("accountBtn").textContent=
- currentUser?currentUser.email+" | Đăng xuất":"Đăng nhập";
- document.getElementById("accountBtn").onclick=
- currentUser?logout:openAuth;
+
+ const b=document.getElementById("accountButton");
+ b.textContent=currentUser?"Đăng xuất":"Đăng nhập";
+
+ const logo=document.getElementById("headerLogo");
+ logo.innerHTML=u?.avatar?`<img src="${u.avatar}" alt="Logo tài khoản">`:"TP";
+}
+
+function accountAction(){
+ if(currentUser)logout();
+ else auth("login");
 }
 
 function render(){
- updateNavigation();
+ updateNav();
  const app=document.getElementById("app");
-
- if(currentPage==="home")app.innerHTML=homePage();
- if(currentPage==="activities")app.innerHTML=contentPage("activity");
- if(currentPage==="posts")app.innerHTML=contentPage("post");
- if(currentPage==="questions")app.innerHTML=questionPage();
- if(currentPage==="feedback")app.innerHTML=feedbackPage();
- if(currentPage==="admin"){
-  if(!isAdmin()){currentPage="home";render();return;}
-  app.innerHTML=adminPage();
- }
+ const pages={
+ home:homePage,
+ activities:()=>contentPage("activity"),
+ posts:()=>contentPage("post"),
+ questions:questionPage,
+ feedback:feedbackPage,
+ profile:profilePage,
+ admin:adminPage
+ };
+ if(!pages[page])page="home";
+ if(page==="admin"&&!isAdmin())page="home";
+ app.innerHTML=pages[page]();
 }
 
-// =====================================
+// ===================================
 // TRANG CHỦ
-// =====================================
+// ===================================
 
 function homePage(){
- const posts=db.posts.filter(p=>p.type==="post").slice().reverse().slice(0,3);
- const activities=db.posts.filter(p=>p.type==="activity").slice().reverse().slice(0,3);
-
  return `
  <section class="hero">
   <small>CỔNG THÔNG TIN ĐIỆN TỬ</small>
   <h2>Chung tay xây dựng Tổ dân phố Trần Phú văn minh, đoàn kết và phát triển</h2>
-  <p>Nơi kết nối cộng đồng, chia sẻ thông tin, cập nhật hoạt động và tiếp nhận ý kiến đóng góp của người dân.</p>
-  <button class="hero-btn" onclick="go('activities')">Khám phá hoạt động →</button>
+  <p>Nơi kết nối cộng đồng, chia sẻ thông tin và cập nhật các hoạt động của địa phương.</p>
+  <button class="btn gold" onclick="go('activities')">Khám phá hoạt động →</button>
  </section>
-
- <h2 class="section-title">Thông tin cộng đồng</h2>
+ <h2 class="section">Thông tin cộng đồng</h2>
  <div class="grid">
-  <div class="card"><h3>🏘️ Đoàn kết</h3><p>Phát huy tinh thần đoàn kết, tương trợ và gắn bó trong cộng đồng dân cư.</p></div>
-  <div class="card"><h3>🌱 Văn minh</h3><p>Xây dựng môi trường sống xanh, sạch, đẹp và văn minh.</p></div>
-  <div class="card"><h3>🤝 Kết nối</h3><p>Chia sẻ thông tin, lắng nghe ý kiến và cùng nhau xây dựng địa phương.</p></div>
+  <div class="card"><h3>🏘️ Đoàn kết</h3><p>Phát huy tinh thần đoàn kết và tương trợ trong cộng đồng.</p></div>
+  <div class="card"><h3>🌱 Văn minh</h3><p>Xây dựng môi trường sống xanh, sạch, đẹp.</p></div>
+  <div class="card"><h3>🤝 Kết nối</h3><p>Lắng nghe ý kiến và cùng nhau xây dựng địa phương.</p></div>
  </div>
-
- <h2 class="section-title">Hoạt động nổi bật</h2>
- ${cards(activities)}
- <div class="actions"><button class="btn secondary" onclick="go('activities')">Xem tất cả hoạt động</button></div>
-
- <h2 class="section-title">Bài viết mới nhất</h2>
- ${cards(posts)}
- <div class="actions"><button class="btn secondary" onclick="go('posts')">Xem tất cả bài viết</button></div>
-
- <h2 class="section-title">Kết nối với cộng đồng</h2>
- <div class="grid">
-  <div class="card"><h3>❓ Hỏi đáp</h3><p>Đặt câu hỏi và tìm kiếm thông tin hữu ích.</p><div class="actions"><button class="btn" onclick="go('questions')">Đặt câu hỏi</button></div></div>
-  <div class="card"><h3>💬 Góp ý</h3><p>Gửi ý kiến đóng góp để xây dựng khu dân cư.</p><div class="actions"><button class="btn" onclick="go('feedback')">Gửi góp ý</button></div></div>
-  <div class="card"><h3>🔐 Tài khoản</h3><p>Đăng nhập để tham gia các hoạt động trên website.</p><div class="actions"><button class="btn" onclick="openAuth()">Đăng nhập</button></div></div>
- </div>`;
+ <h2 class="section">Hoạt động mới nhất</h2>
+ ${cards(db.posts.filter(p=>p.type==="activity").slice().reverse().slice(0,3))}
+ <h2 class="section">Bài viết mới nhất</h2>
+ ${cards(db.posts.filter(p=>p.type==="post").slice().reverse().slice(0,3))}
+ `;
 }
 
 function cards(items){
- if(!items.length)return `<div class="empty">Chưa có nội dung được đăng tải.</div>`;
+ if(!items.length)return `<div class="empty">Chưa có nội dung.</div>`;
  return `<div class="grid">${items.map(p=>`
- <article class="card">
+ <div class="card">
+  ${p.image?`<img class="postimg" src="${escapeHTML(p.image)}" onerror="this.style.display='none'">`:""}
   <span class="tag">${p.type==="activity"?"HOẠT ĐỘNG":"BÀI VIẾT"}</span>
-  ${p.image?`<img src="${esc(p.image)}" alt="Hình ảnh bài viết" onerror="this.style.display='none'">`:""}
-  <div class="date">📅 ${esc(p.date)}</div>
-  <h3>${esc(p.title)}</h3>
-  <p>${esc(p.content)}</p>
- </article>`).join("")}</div>`;
+  <p class="muted">${escapeHTML(p.date)}</p>
+  <h3>${escapeHTML(p.title)}</h3>
+  <p>${escapeHTML(p.content)}</p>
+  ${canEdit()?`<div class="actions">
+   <button class="btn sm" onclick="editPost(${p.id})">Sửa</button>
+   <button class="btn red sm" onclick="deleteRecord('posts',${p.id})">Xóa</button>
+  </div>`:""}
+ </div>`).join("")}</div>`;
 }
 
-// =====================================
-// HOẠT ĐỘNG VÀ BÀI VIẾT
-// =====================================
+// ===================================
+// BÀI VIẾT VÀ HOẠT ĐỘNG
+// ===================================
 
 function contentPage(type){
- const activity=type==="activity";
  const items=db.posts.filter(p=>p.type===type).slice().reverse();
-
  return `
- <div class="page-heading">
-  <h2>${activity?"Hoạt động cộng đồng":"Bài viết và thông báo"}</h2>
-  <p>${activity?"Cập nhật các phong trào, sự kiện và hoạt động của tổ dân phố.":"Thông tin, tin tức và nội dung tuyên truyền."}</p>
- </div>
- ${canManage()?`<button class="btn" onclick="openEditor('${type}')">+ Đăng ${activity?"hoạt động":"bài viết"}</button>`:""}
+ <h2 class="section">${type==="activity"?"Hoạt động cộng đồng":"Bài viết và thông báo"}</h2>
+ <p class="muted">${type==="activity"?"Các phong trào và sự kiện của tổ dân phố.":"Tin tức và thông tin tuyên truyền."}</p>
+ ${canEdit()?`<button class="btn" onclick="openPost('${type}')">+ Đăng nội dung</button>`:""}
  <div style="margin-top:20px">${cards(items)}</div>`;
 }
 
-function openEditor(type,id=null){
- if(!canManage()){alert("Bạn không có quyền thực hiện.");return;}
- const old=db.posts.find(p=>p.id===id);
- document.getElementById("authTitle").textContent=old?"Chỉnh sửa nội dung":"Đăng nội dung mới";
- document.getElementById("authFields").innerHTML=`
- <div class="form-group"><label>Tiêu đề</label><input id="editTitle" value="${esc(old?.title||"")}" maxlength="150"></div>
- <div class="form-group"><label>Nội dung</label><textarea id="editContent">${esc(old?.content||"")}</textarea></div>
- <div class="form-group"><label>Link hình ảnh (nếu có)</label><input id="editImage" value="${esc(old?.image||"")}" placeholder="https://..."></div>
- <button class="btn" onclick="savePost('${type}',${id||"null"})">Lưu nội dung</button>`;
- document.getElementById("authModal").classList.add("show");
+function openPost(type,old=null){
+ showModal(old?"Chỉnh sửa nội dung":"Đăng nội dung",`
+ <div class="field"><label>Tiêu đề</label><input id="pTitle" maxlength="150" value="${escapeHTML(old?.title||"")}"></div>
+ <div class="field"><label>Nội dung</label><textarea id="pContent">${escapeHTML(old?.content||"")}</textarea></div>
+ <div class="field"><label>Link ảnh (nếu có)</label><input id="pImage" value="${escapeHTML(old?.image||"")}" placeholder="https://..."></div>
+ <button class="btn" onclick="savePost('${type}',${old?.id||"null"})">Lưu nội dung</button>`);
 }
 
+function editPost(id){
+ const p=db.posts.find(x=>x.id===id);
+ if(p)openPost(p.type,p);
+}
 function savePost(type,id){
- const title=document.getElementById("editTitle").value.trim();
- const content=document.getElementById("editContent").value.trim();
- const image=document.getElementById("editImage").value.trim();
-
- if(!title||!content){alert("Vui lòng nhập tiêu đề và nội dung.");return;}
+ const title=document.getElementById("pTitle").value.trim();
+ const content=document.getElementById("pContent").value.trim();
+ const image=document.getElementById("pImage").value.trim();
+ if(!title||!content)return alert("Vui lòng nhập đầy đủ nội dung.");
  if(id){
-  let p=db.posts.find(p=>p.id===id);
-  if(!p)return;
-  Object.assign(p,{title,content,image});
+  const p=db.posts.find(x=>x.id===id);
+  if(p)Object.assign(p,{title,content,image});
  }else{
-  db.posts.push({id:Date.now(),type,title,content,image,date:dateNow()});
+  db.posts.push({id:Date.now(),type,title,content,image,date:new Date().toLocaleDateString("vi-VN")});
  }
- save();closeAuth();render();
+ save();closeModal();render();
 }
 
-// =====================================
+// ===================================
 // HỎI ĐÁP
-// =====================================
+// ===================================
 
 function questionPage(){
  return `
- <div class="page-heading">
-  <h2>Hỏi đáp cộng đồng</h2>
-  <p>Đặt câu hỏi và theo dõi câu trả lời từ ban quản trị.</p>
- </div>
- <div class="form-card">
-  <h3>Gửi câu hỏi</h3>
-  <div class="form-group"><label>Nội dung câu hỏi</label><textarea id="questionText" placeholder="Nhập câu hỏi của bạn..."></textarea></div>
+ <h2 class="section">Hỏi đáp cộng đồng</h2>
+ <div class="form">
+  <div class="field"><label>Nội dung câu hỏi</label><textarea id="qText" placeholder="Nhập câu hỏi..."></textarea></div>
   <button class="btn" onclick="sendQuestion()">Gửi câu hỏi</button>
  </div>
- <h2 class="section-title">Câu hỏi và giải đáp</h2>
+ <h2 class="section">Danh sách câu hỏi</h2>
  ${db.questions.slice().reverse().map(q=>`
- <div class="card" style="margin-bottom:12px">
-  <span class="tag">CÂU HỎI</span>
-  <p class="date">${esc(q.author)} · ${esc(q.date)}</p>
-  <h3>${esc(q.text)}</h3>
-  ${q.answer?`<div class="notice"><b>Trả lời:</b><br>${esc(q.answer)}</div>`:"<p>Đang chờ phản hồi.</p>"}
+ <div class="card">
+  <p class="muted">${escapeHTML(q.author)} · ${escapeHTML(q.date)}</p>
+  <h3>${escapeHTML(q.text)}</h3>
+  ${q.answer?`<div class="notice"><b>Trả lời:</b> ${escapeHTML(q.answer)}</div>`:"<p>Đang chờ phản hồi.</p>"}
   ${isAdmin()?`
-   <div class="form-group"><textarea id="answer${q.id}" placeholder="Nhập câu trả lời...">${esc(q.answer||"")}</textarea></div>
-   <button class="btn small" onclick="answerQuestion(${q.id})">Lưu trả lời</button>
-   <button class="btn danger small" onclick="deleteItem('questions',${q.id})">Xóa</button>
-  `:""}
- </div>`).join("")||`<div class="empty">Chưa có câu hỏi nào.</div>`}`;
+  <div class="field"><textarea id="a${q.id}" placeholder="Nhập trả lời">${escapeHTML(q.answer||"")}</textarea></div>
+  <button class="btn sm" onclick="answerQuestion(${q.id})">Lưu trả lời</button>
+  <button class="btn red sm" onclick="deleteRecord('questions',${q.id})">Xóa</button>`:""}
+ </div>`).join("")||`<div class="empty">Chưa có câu hỏi.</div>`}
+ `;
 }
 
 function sendQuestion(){
- if(!currentUser){alert("Vui lòng đăng nhập để gửi câu hỏi.");return;}
- const text=document.getElementById("questionText").value.trim();
- if(!text)return alert("Vui lòng nhập nội dung.");
- db.questions.push({id:Date.now(),text,author:currentUser.email,date:dateNow(),answer:""});
+ if(!currentUser)return alert("Hãy đăng nhập trước.");
+ const text=document.getElementById("qText").value.trim();
+ if(!text)return alert("Vui lòng nhập câu hỏi.");
+ db.questions.push({id:Date.now(),text,author:user()?.name||currentUser.email,date:new Date().toLocaleString("vi-VN"),answer:""});
  save();render();alert("Đã gửi câu hỏi.");
 }
-
 function answerQuestion(id){
+ if(!isAdmin())return;
  const q=db.questions.find(x=>x.id===id);
- if(!q)return;
- q.answer=document.getElementById("answer"+id).value.trim();
+ if(q)q.answer=document.getElementById("a"+id).value.trim();
  save();render();
 }
 
-// =====================================
+// ===================================
 // GÓP Ý
-// =====================================
+// ===================================
 
 function feedbackPage(){
  return `
- <div class="page-heading">
-  <h2>Góp ý và phản ánh</h2>
-  <p>Mọi ý kiến đóng góp đều góp phần xây dựng cộng đồng tốt đẹp hơn.</p>
- </div>
- <div class="form-card">
-  <h3>Gửi ý kiến đóng góp</h3>
-  <div class="form-group"><label>Họ và tên</label><input id="feedbackName" placeholder="Nhập họ tên"></div>
-  <div class="form-group"><label>Nội dung góp ý</label><textarea id="feedbackText" placeholder="Nhập ý kiến của bạn..."></textarea></div>
+ <h2 class="section">Góp ý và phản ánh</h2>
+ <div class="form">
+  <div class="field"><label>Họ tên</label><input id="fName" value="${escapeHTML(user()?.name||"")}"></div>
+  <div class="field"><label>Nội dung góp ý</label><textarea id="fText"></textarea></div>
   <button class="btn" onclick="sendFeedback()">Gửi góp ý</button>
  </div>
  ${isAdmin()?`
- <h2 class="section-title">Danh sách góp ý</h2>
+ <h2 class="section">Danh sách góp ý</h2>
  ${db.feedback.slice().reverse().map(f=>`
- <div class="card" style="margin-bottom:12px">
-  <h3>${esc(f.name)}</h3><p class="date">${esc(f.email)} · ${esc(f.date)}</p>
-  <p>${esc(f.text)}</p>
-  <div class="actions"><button class="btn danger small" onclick="deleteItem('feedback',${f.id})">Xóa</button></div>
+ <div class="card">
+  <h3>${escapeHTML(f.name)}</h3>
+  <p class="muted">${escapeHTML(f.email)} · ${escapeHTML(f.date)}</p>
+  <p>${escapeHTML(f.text)}</p>
+  <button class="btn red sm" onclick="deleteRecord('feedback',${f.id})">Xóa</button>
  </div>`).join("")||`<div class="empty">Chưa có góp ý.</div>`}
  `:""}`;
 }
-
 function sendFeedback(){
- if(!currentUser)return alert("Vui lòng đăng nhập.");
- const name=document.getElementById("feedbackName").value.trim();
- const text=document.getElementById("feedbackText").value.trim();
- if(!name||!text)return alert("Vui lòng nhập đầy đủ thông tin.");
- db.feedback.push({id:Date.now(),name,text,email:currentUser.email,date:dateNow()});
- save();render();alert("Cảm ơn bạn đã gửi góp ý!");
+ if(!currentUser)return alert("Hãy đăng nhập trước.");
+ const name=document.getElementById("fName").value.trim();
+ const text=document.getElementById("fText").value.trim();
+ if(!name||!text)return alert("Vui lòng nhập đầy đủ.");
+ db.feedback.push({id:Date.now(),name,text,email:currentUser.email,date:new Date().toLocaleString("vi-VN")});
+ save();render();alert("Đã gửi góp ý.");
 }
 
-// =====================================
-// QUẢN TRỊ WEBSITE
-// =====================================
+// ===================================
+// HỒ SƠ CÁ NHÂN - ĐỔI AVATAR
+// ===================================
+
+function profilePage(){
+ const u=user();
+ if(!u)return "";
+ return `
+ <h2 class="section">Hồ sơ cá nhân</h2>
+ <div class="panel">
+  <div class="profile-head">
+   ${avatarHTML(u)}
+   <div>
+    <h2>${escapeHTML(u.name||"Thành viên")}</h2>
+    <p class="muted">${escapeHTML(u.email)}</p>
+    <span class="tag">${escapeHTML(roleOf(u.email))}</span>
+   </div>
+  </div>
+  <hr style="border:0;border-top:1px solid #e0e9e2;margin:22px 0">
+  <div class="field">
+   <label>Ảnh đại diện mới</label>
+   <input type="file" id="avatarFile" accept="image/png,image/jpeg,image/webp">
+  </div>
+  <button class="btn" onclick="changeAvatar()">Cập nhật avatar</button>
+  <div class="field"><label>Họ và tên</label><input id="myName" value="${escapeHTML(u.name||"")}"></div>
+  <div class="field"><label>Email</label><input value="${escapeHTML(u.email)}" disabled></div>
+  <button class="btn" onclick="saveProfile()">Lưu thông tin</button>
+  <h3 style="margin-top:25px">Đổi mật khẩu</h3>
+  <div class="field"><label>Mật khẩu hiện tại</label><input type="password" id="oldPass"></div>
+  <div class="field"><label>Mật khẩu mới</label><input type="password" id="newPass"></div>
+  <button class="btn gray" onclick="changePassword()">Đổi mật khẩu</button>
+ </div>`;
+}
+
+function changeAvatar(){
+ const file=document.getElementById("avatarFile").files[0];
+ if(!file)return alert("Hãy chọn ảnh trước.");
+ if(!file.type.startsWith("image/"))return alert("File không phải ảnh.");
+ if(file.size>5*1024*1024)return alert("Ảnh tối đa 5MB.");
+
+ const reader=new FileReader();
+ reader.onload=e=>{
+  const img=new Image();
+  img.onload=()=>{
+   const canvas=document.createElement("canvas");
+   const max=400;
+   const scale=Math.min(1,max/Math.max(img.width,img.height));
+   canvas.width=Math.round(img.width*scale);
+   canvas.height=Math.round(img.height*scale);
+   canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+   user().avatar=canvas.toDataURL("image/jpeg",0.8);
+   try{save();render();alert("Đã đổi avatar!");}
+   catch(err){alert("Ảnh quá lớn để lưu. Hãy chọn ảnh khác.");}
+  };
+  img.onerror=()=>alert("Không thể đọc ảnh.");
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+}
+
+function saveProfile(){
+ const name=document.getElementById("myName").value.trim();
+ if(!name)return alert("Hãy nhập họ tên.");
+ user().name=name;
+ save();render();alert("Đã cập nhật hồ sơ.");
+}
+
+function changePassword(){
+ const old=document.getElementById("oldPass").value;
+ const next=document.getElementById("newPass").value;
+ if(old!==user().password)return alert("Mật khẩu hiện tại không đúng.");
+ if(next.length<8)return alert("Mật khẩu mới tối thiểu 8 ký tự.");
+ user().password=next;
+ save();alert("Đổi mật khẩu thành công.");
+}
+
+// ===================================
+// TRUNG TÂM QUẢN TRỊ
+// ===================================
 
 function adminPage(){
+ if(!isAdmin())return "";
  return `
- <div class="page-heading">
-  <h2>⚙️ TRUNG TÂM QUẢN TRỊ</h2>
-  <p>Quản lý toàn bộ hoạt động của website Tổ dân phố Trần Phú.</p>
- </div>
-
- <div class="notice">Đang đăng nhập với quyền ADMIN: ${esc(currentUser.email)}</div>
-
+ <h2 class="section">⚙️ TRUNG TÂM QUẢN TRỊ</h2>
+ <div class="notice">Quản trị viên: ${escapeHTML(currentUser.email)}</div>
  <div class="stats">
   <div class="stat"><strong>${db.users.length}</strong><span>Tài khoản</span></div>
-  <div class="stat"><strong>${db.posts.filter(p=>p.type==="post").length}</strong><span>Bài viết</span></div>
-  <div class="stat"><strong>${db.posts.filter(p=>p.type==="activity").length}</strong><span>Hoạt động</span></div>
+  <div class="stat"><strong>${db.posts.length}</strong><span>Nội dung</span></div>
+  <div class="stat"><strong>${db.questions.length}</strong><span>Câu hỏi</span></div>
   <div class="stat"><strong>${db.feedback.length}</strong><span>Góp ý</span></div>
  </div>
-
- <h2 class="section-title">Quản lý tài khoản và phân quyền</h2>
- <div class="notice">Bạn có thể thay đổi quyền của thành viên ngay tại đây. Tài khoản ADMIN chính không thể bị hạ quyền.</div>
-
- <div class="table-wrap">
- <table>
-  <thead><tr><th>Email</th><th>Vai trò</th><th>Thay đổi quyền</th><th>Thao tác</th></tr></thead>
-  <tbody>
-  ${db.users.map(u=>`
-   <tr>
-    <td>${esc(u.email)}</td>
-    <td><span class="role">${esc(roleOf(u.email))}</span></td>
-    <td>
-     ${u.email.toLowerCase()===ADMIN_EMAIL?"Tài khoản quản trị chính":`
-     <select id="role${u.id}">
-      <option value="USER" ${u.role==="USER"?"selected":""}>Thành viên</option>
-      <option value="EDITOR" ${u.role==="EDITOR"?"selected":""}>Biên tập viên</option>
-      <option value="ADMIN" ${u.role==="ADMIN"?"selected":""}>Admin</option>
-     </select>`}
-    </td>
-    <td>
-     ${u.email.toLowerCase()===ADMIN_EMAIL?"—":`
-      <button class="btn small" onclick="changeRole(${u.id})">Lưu quyền</button>
-      <button class="btn danger small" onclick="deleteUser(${u.id})">Xóa</button>`}
-    </td>
-   </tr>`).join("")||`<tr><td colspan="4">Chưa có tài khoản nào.</td></tr>`}
-  </tbody>
- </table>
- </div>
-
- <h2 class="section-title">Quản lý nội dung</h2>
- <div class="card">
-  <p>Tổng số nội dung: ${db.posts.length}</p>
-  <div class="actions">
-   <button class="btn" onclick="go('posts')">Quản lý bài viết</button>
-   <button class="btn" onclick="go('activities')">Quản lý hoạt động</button>
-   <button class="btn" onclick="go('questions')">Quản lý hỏi đáp</button>
-   <button class="btn" onclick="go('feedback')">Xem góp ý</button>
-  </div>
- </div>
-
- <h2 class="section-title">Danh sách nội dung</h2>
- <div class="table-wrap">
- <table>
- <thead><tr><th>Tiêu đề</th><th>Loại</th><th>Thao tác</th></tr></thead>
+ <h2 class="section">Quản lý thành viên và phân quyền</h2>
+ <div class="notice">Chọn vai trò và nhấn Lưu để thay đổi quyền. Tài khoản ADMIN chính được bảo vệ.</div>
+ <div class="tablebox"><table>
+ <thead><tr><th>Thành viên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
  <tbody>
- ${db.posts.slice().reverse().map(p=>`
+ ${db.users.map(u=>`
  <tr>
- <td>${esc(p.title)}</td>
- <td>${p.type==="activity"?"Hoạt động":"Bài viết"}</td>
- <td>
- <button class="btn small" onclick="openEditor('${p.type}',${p.id})">Sửa</button>
- <button class="btn danger small" onclick="deleteItem('posts',${p.id})">Xóa</button>
- </td>
- </tr>`).join("")}
- </tbody></table></div>`;
+  <td>${u.avatar?`<img src="${u.avatar}" style="width:35px;height:35px;border-radius:50%;object-fit:cover;vertical-align:middle">`:"👤"} ${escapeHTML(u.name||"Chưa cập nhật")}</td>
+  <td>${escapeHTML(u.email)}</td>
+  <td>
+  ${u.email===ADMIN_EMAIL?"<b>ADMIN CHÍNH</b>":`
+   <select id="role${u.id}">
+    <option value="USER" ${u.role==="USER"?"selected":""}>Thành viên</option>
+    <option value="EDITOR" ${u.role==="EDITOR"?"selected":""}>Biên tập viên</option>
+    <option value="ADMIN" ${u.role==="ADMIN"?"selected":""}>Admin</option>
+   </select>`}
+  </td>
+  <td>${u.locked?"🔒 Đã khóa":"🟢 Hoạt động"}</td>
+  <td>
+  ${u.email===ADMIN_EMAIL?"Không thể sửa":`
+   <button class="btn sm" onclick="changeRole(${u.id})">Lưu quyền</button>
+   <button class="btn gray sm" onclick="toggleLock(${u.id})">${u.locked?"Mở khóa":"Khóa"}</button>
+   <button class="btn red sm" onclick="deleteUser(${u.id})">Xóa</button>`}
+  </td>
+ </tr>`).join("")||`<tr><td colspan="5">Chưa có thành viên.</td></tr>`}
+ </tbody></table></div>
+
+ <h2 class="section">Quản lý nội dung</h2>
+ <div class="panel">
+  <p>Bạn có thể quản lý bài viết, hoạt động, câu hỏi và góp ý.</p>
+  <div class="actions">
+   <button class="btn" onclick="go('posts')">Bài viết</button>
+   <button class="btn" onclick="go('activities')">Hoạt động</button>
+   <button class="btn" onclick="go('questions')">Hỏi đáp</button>
+   <button class="btn" onclick="go('feedback')">Góp ý</button>
+  </div>
+ </div>`;
 }
 
 function changeRole(id){
+ if(!isAdmin())return;
  const u=db.users.find(x=>x.id===id);
- if(!u||u.email.toLowerCase()===ADMIN_EMAIL)return;
+ if(!u||u.email===ADMIN_EMAIL)return;
  u.role=document.getElementById("role"+id).value;
- save();render();alert("Đã cập nhật quyền!");
+ save();render();alert("Đã cập nhật quyền thành công.");
 }
-
-function deleteUser(id){
- if(!confirm("Bạn chắc chắn muốn xóa tài khoản này?"))return;
- db.users=db.users.filter(u=>u.id!==id);
+function toggleLock(id){
+ if(!isAdmin())return;
+ const u=db.users.find(x=>x.id===id);
+ if(!u||u.email===ADMIN_EMAIL)return;
+ u.locked=!u.locked;
  save();render();
 }
-
-function deleteItem(collection,id){
+function deleteUser(id){
+ if(!isAdmin())return;
+ const u=db.users.find(x=>x.id===id);
+ if(!u||u.email===ADMIN_EMAIL)return;
+ if(!confirm("Xóa tài khoản này?"))return;
+ db.users=db.users.filter(x=>x.id!==id);
+ save();render();
+}
+function deleteRecord(collection,id){
  if(!isAdmin())return alert("Không có quyền.");
- if(!confirm("Bạn chắc chắn muốn xóa nội dung này?"))return;
+ if(!confirm("Bạn chắc chắn muốn xóa?"))return;
  db[collection]=db[collection].filter(x=>x.id!==id);
  save();render();
 }
 
-// =====================================
-// ĐĂNG KÝ VÀ ĐĂNG NHẬP
-// =====================================
+// ===================================
+// ĐĂNG NHẬP VÀ ĐĂNG KÝ
+// ===================================
 
-let authMode="login";
+function showModal(title,html){
+ document.getElementById("modalTitle").textContent=title;
+ document.getElementById("modalBody").innerHTML=html;
+ document.getElementById("modal").classList.add("show");
+}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
 
-function openAuth(){
- authMode="login";
- showAuth();
+function auth(mode){
+ const html=`
+ <div class="field"><label>Email</label><input id="email" type="email" placeholder="example@gmail.com"></div>
+ <div class="field"><label>Mật khẩu</label><input id="password" type="password"></div>
+ ${mode==="register"?`
+ <div class="field"><label>Họ và tên</label><input id="regName"></div>
+ <div class="field"><label>Xác nhận mật khẩu</label><input id="confirm" type="password"></div>`:""}
+ <button class="btn" style="width:100%" onclick="submitAuth('${mode}')">${mode==="login"?"Đăng nhập":"Đăng ký"}</button>
+ <div class="notice">${mode==="login"?
+ `Chưa có tài khoản? <a href="#" onclick="auth('register')">Đăng ký</a>`:
+ `Đã có tài khoản? <a href="#" onclick="auth('login')">Đăng nhập</a>`}</div>`;
+ showModal(mode==="login"?"Đăng nhập":"Tạo tài khoản",html);
 }
 
-function closeAuth(){
- document.getElementById("authModal").classList.remove("show");
-}
+function submitAuth(mode){
+ const email=document.getElementById("email").value.trim().toLowerCase();
+ const password=document.getElementById("password").value;
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return alert("Email không hợp lệ.");
+ if(password.length<8)return alert("Mật khẩu tối thiểu 8 ký tự.");
 
-function showAuth(){
- document.getElementById("authTitle").textContent=
- authMode==="login"?"Đăng nhập":"Đăng ký tài khoản";
-
- document.getElementById("authFields").innerHTML=`
- <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="example@gmail.com"></div>
- <div class="form-group"><label>Mật khẩu</label><input id="authPassword" type="password" placeholder="Nhập mật khẩu"></div>
- ${authMode==="register"?`
- <div class="form-group"><label>Xác nhận mật khẩu</label><input id="authConfirm" type="password"></div>`:""}
- <button class="btn" style="width:100%" onclick="submitAuth()">${authMode==="login"?"Đăng nhập":"Tạo tài khoản"}</button>
- <div class="notice">
- ${authMode==="login"?
- `Chưa có tài khoản? <a href="#" onclick="authMode='register';showAuth()">Đăng ký tại đây</a>`:
- `Đã có tài khoản? <a href="#" onclick="authMode='login';showAuth()">Đăng nhập</a>`}
- </div>
- `;
- document.getElementById("authModal").classList.add("show");
-}
-
-function submitAuth(){
- const email=document.getElementById("authEmail").value.trim().toLowerCase();
- const password=document.getElementById("authPassword").value;
-
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
- return alert("Email không hợp lệ.");
-
- if(password.length<8)
- return alert("Mật khẩu cần tối thiểu 8 ký tự.");
-
- if(authMode==="register"){
-  const confirmPassword=document.getElementById("authConfirm").value;
-  if(password!==confirmPassword)return alert("Mật khẩu xác nhận không khớp.");
+ if(mode==="register"){
+  const name=document.getElementById("regName").value.trim();
+  if(!name)return alert("Hãy nhập họ tên.");
+  if(password!==document.getElementById("confirm").value)return alert("Mật khẩu không khớp.");
   if(db.users.some(u=>u.email===email))return alert("Email đã tồn tại.");
 
   db.users.push({
-   id:Date.now(),
-   email,
-   password,
-   role:email===ADMIN_EMAIL?"ADMIN":"USER"
+   id:Date.now(),email,password,name,avatar:"",
+   role:email===ADMIN_EMAIL?"ADMIN":"USER",locked:false
   });
-  save();
-  alert("Đăng ký thành công! Hãy đăng nhập.");
-  authMode="login";showAuth();return;
+  save();alert("Đăng ký thành công. Hãy đăng nhập.");auth("login");return;
  }
 
- const user=db.users.find(u=>u.email===email&&u.password===password);
- if(!user)return alert("Email hoặc mật khẩu không chính xác.");
-
- currentUser={email:user.email};
- closeAuth();render();
+ const u=db.users.find(x=>x.email===email&&x.password===password);
+ if(!u)return alert("Email hoặc mật khẩu không đúng.");
+ if(u.locked&&email!==ADMIN_EMAIL)return alert("Tài khoản đã bị khóa.");
+ currentUser={email:u.email};
+ closeModal();page="home";render();
  alert("Đăng nhập thành công!");
 }
 
 function logout(){
- currentUser=null;
- currentPage="home";
- render();
+ currentUser=null;page="home";render();
  alert("Đã đăng xuất.");
 }
 
-// =====================================
-// KHỞI CHẠY
-// =====================================
+// ===================================
+// KHỞI ĐỘNG
+// ===================================
 
+save();
 render();
+
+// Để đăng nhập ADMIN lần đầu:
+// Đăng ký bằng email anhduydl2012@gmail.com.
+// Tài khoản này tự động nhận quyền ADMIN.
 </script>
 </body>
 </html>
