@@ -676,3 +676,911 @@ render();
 </script>
 </body>
 </html>
+**PHẦN 3/4 — JavaScript: nhận diện dấu hiệu và tính điểm rủi ro**
+
+```javascript
+        }
+
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          throw new Error("Chỉ hỗ trợ URL bắt đầu bằng http:// hoặc https://.");
+        }
+
+        if (!parsed.hostname || parsed.hostname.indexOf(".") === -1) {
+          if (parsed.hostname !== "localhost") {
+            throw new Error("Tên miền có vẻ chưa đầy đủ. Hãy nhập URL chính xác.");
+          }
+        }
+
+        if (parsed.username || parsed.password) {
+          throw new Error("URL chứa thông tin trước tên miền. Không nên tiếp tục sử dụng URL này.");
+        }
+
+        return parsed;
+      }
+
+      /*
+        THƯ VIỆN NỘI BỘ:
+        Không tạo phần tử giao diện để hiển thị danh sách này.
+        Lưu ý: vì chạy hoàn toàn trên trình duyệt, người xem mã nguồn vẫn có thể đọc được.
+      */
+      var officialDomains = [
+        { brand: "Google", domain: "google.com" },
+        { brand: "YouTube", domain: "youtube.com" },
+        { brand: "Microsoft", domain: "microsoft.com" },
+        { brand: "Apple", domain: "apple.com" },
+        { brand: "Facebook", domain: "facebook.com" },
+        { brand: "Instagram", domain: "instagram.com" },
+        { brand: "Wikipedia", domain: "wikipedia.org" },
+        { brand: "GitHub", domain: "github.com" },
+        { brand: "OpenAI", domain: "openai.com" },
+        { brand: "PayPal", domain: "paypal.com" },
+        { brand: "Amazon", domain: "amazon.com" },
+        { brand: "Netflix", domain: "netflix.com" },
+        { brand: "Zalo", domain: "zalo.me" },
+        { brand: "VnExpress", domain: "vnexpress.net" },
+        { brand: "Cổng Thông tin Chính phủ", domain: "chinhphu.vn" }
+      ];
+
+      function getBaseDomain(host) {
+        var labels = host.split(".");
+        if (labels.length <= 2) return host;
+
+        var twoPartSuffixes = [
+          "com.vn", "net.vn", "org.vn", "gov.vn", "edu.vn",
+          "ac.vn", "co.uk", "org.uk", "com.au", "co.jp",
+          "com.br", "co.nz"
+        ];
+
+        var suffix = labels.slice(-2).join(".");
+        if (twoPartSuffixes.indexOf(suffix) !== -1 && labels.length >= 3) {
+          return labels.slice(-3).join(".");
+        }
+
+        return labels.slice(-2).join(".");
+      }
+
+      function editDistance(a, b) {
+        var matrix = [];
+        var i;
+        var j;
+
+        for (i = 0; i <= a.length; i++) {
+          matrix[i] = [i];
+        }
+
+        for (j = 0; j <= b.length; j++) {
+          matrix[0][j] = j;
+        }
+
+        for (i = 1; i <= a.length; i++) {
+          for (j = 1; j <= b.length; j++) {
+            var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j - 1] + cost
+            );
+          }
+        }
+
+        return matrix[a.length][b.length];
+      }
+
+      function analyzeUrl(parsed, original) {
+        var host = parsed.hostname.toLowerCase();
+        var baseDomain = getBaseDomain(host);
+        var fullUrl = parsed.href;
+        var score = 0;
+        var findings = [];
+        var seen = {};
+
+        function addFinding(title, description, points, key) {
+          if (key && seen[key]) return;
+          if (key) seen[key] = true;
+
+          score += points;
+          findings.push({
+            title: title,
+            description: description,
+            points: points
+          });
+        }
+
+        // 1. Giao thức HTTP không mã hóa.
+        if (parsed.protocol === "http:") {
+          addFinding(
+            "Sử dụng HTTP",
+            "Kết nối HTTP không mã hóa dữ liệu truyền tải như HTTPS.",
+            15,
+            "http"
+          );
+        }
+
+        // 2. Địa chỉ IP thay cho tên miền.
+        var ipv4Pattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+        var ipv6Pattern = /^\[[0-9a-f:]+\]$/i;
+
+        if (ipv4Pattern.test(host) || ipv6Pattern.test(host)) {
+          addFinding(
+            "Sử dụng địa chỉ IP",
+            "URL dùng địa chỉ IP trực tiếp thay vì tên miền thông thường.",
+            20,
+            "ip"
+          );
+        }
+
+        // 3. Punycode có thể được dùng để giả mạo ký tự tên miền.
+        if (host.indexOf("xn--") !== -1) {
+          addFinding(
+            "Phát hiện Punycode",
+            "Tên miền chứa chuỗi xn--. Hãy kiểm tra kỹ vì ký tự quốc tế có thể bị lợi dụng để giả mạo.",
+            25,
+            "punycode"
+          );
+        }
+
+        // 4. Ký tự @ trong URL.
+        if (original.indexOf("@") !== -1) {
+          addFinding(
+            "Chứa ký tự @",
+            "Ký tự @ có thể khiến người dùng nhầm phần thông tin trước nó với tên miền thật.",
+            20,
+            "at"
+          );
+        }
+
+        // 5. Tên miền quá dài.
+        if (host.length > 35) {
+          addFinding(
+            "Tên miền dài bất thường",
+            "Tên miền có nhiều ký tự, khó nhận diện và dễ gây nhầm lẫn.",
+            10,
+            "long-host"
+          );
+        }
+
+        // 6. Nhiều dấu gạch nối.
+        var hyphenCount = (host.match(/-/g) || []).length;
+        if (hyphenCount >= 3) {
+          addFinding(
+            "Nhiều dấu gạch nối",
+            "Tên miền có nhiều dấu gạch nối, một đặc điểm có thể xuất hiện trong tên miền giả mạo.",
+            10,
+            "hyphens"
+          );
+        }
+
+        // 7. Từ khóa thường xuất hiện trong liên kết lừa đảo.
+        var suspiciousWords = [
+          "login", "verify", "verification", "secure", "account",
+          "update", "password", "banking", "wallet", "signin",
+          "confirm", "gift", "bonus", "free", "claim"
+        ];
+
+        var lowerUrl = fullUrl.toLowerCase();
+        var foundWords = suspiciousWords.filter(function (word) {
+          return lowerUrl.indexOf(word) !== -1;
+        });
+
+        if (foundWords.length > 0) {
+          addFinding(
+            "Có từ khóa nhạy cảm",
+            "URL chứa từ khóa: " + foundWords.slice(0, 5).join(", ") +
+              ". Đây là dấu hiệu cần chú ý nhưng không đủ để kết luận URL độc hại.",
+            Math.min(15, foundWords.length * 3),
+            "keywords"
+          );
+        }
+
+        // 8. Tên miền có dấu hiệu gần giống thương hiệu phổ biến.
+        var brandMatch = null;
+        var baseLabel = baseDomain.split(".")[0];
+
+        officialDomains.forEach(function (item) {
+          var officialLabel = item.domain.split(".")[0];
+
+          if (baseDomain === item.domain || host === item.domain ||
+              host.endsWith("." + item.domain)) {
+            brandMatch = {
+              brand: item.brand,
+              official: true
+            };
+            return;
+          }
+
+          var distance = editDistance(baseLabel, officialLabel);
+
+          if (
+            distance > 0 &&
+            distance <= 2 &&
+            baseLabel.length >= 5 &&
+            !brandMatch
+          ) {
+            brandMatch = {
+              brand: item.brand,
+              official: false
+            };
+          }
+        });
+
+        if (brandMatch && !brandMatch.official) {
+          addFinding(
+            "Tên miền có thể giả mạo thương hiệu",
+            "Tên miền có nét tương đồng với " + brandMatch.brand +
+              ". Hãy kiểm tra chính tả và địa chỉ chính thức.",
+            25,
+            "brand-typo"
+          );
+        }
+
+        // 9. Nhiều dấu chấm trong tên miền.
+        var dotCount = (host.match(/\./g) || []).length;
+        if (dotCount >= 4) {
+          addFinding(
+            "Tên miền có nhiều cấp",
+            "Tên miền có nhiều phần phân cấp. Hãy xác định đúng tên miền chính.",
+            10,
+            "many-subdomains"
+          );
+        }
+
+        // 10. Đường dẫn có dấu hiệu chuyển hướng.
+        var redirectWords = ["redirect=", "url=", "next=", "return=", "continue="];
+        var hasRedirect = redirectWords.some(function (word) {
+          return fullUrl.toLowerCase().indexOf(word) !== -1;
+        });
+
+        if (hasRedirect) {
+          addFinding(
+            "Có tham số chuyển hướng",
+            "URL chứa tham số có thể dùng để chuyển hướng sang địa chỉ khác.",
+            10,
+            "redirect"
+          );
+        }
+
+        // 11. URL quá dài.
+        if (fullUrl.length > 150) {
+          addFinding(
+            "URL dài bất thường",
+            "Địa chỉ có độ dài lớn, khiến việc kiểm tra bằng mắt khó khăn hơn.",
+            10,
+            "long-url"
+          );
+        }
+
+        // 12. Link rút gọn.
+        var shortenerDomains = [
+          "bit.ly", "tinyurl.com", "t.co", "is.gd",
+          "cutt.ly", "rebrand.ly", "shorturl.at"
+        ];
+
+        if (shortenerDomains.some(function (domain) {
+          return host === domain || host.endsWith("." + domain);
+        })) {
+          addFinding(
+            "Phát hiện dịch vụ rút gọn URL",
+            "Địa chỉ rút gọn che khuất website đích. Hãy xác minh nguồn gửi trước khi mở.",
+            20,
+            "shortener"
+          );
+        }
+
+        // 13. Dấu hiệu tên miền dùng nhiều chữ số.
+        var digitCount = (host.match(/\d/g) || []).length;
+        if (digitCount >= 5) {
+          addFinding(
+            "Tên miền có nhiều chữ số",
+            "Tên miền chứa nhiều chữ số, cần kiểm tra kỹ nguồn gốc.",
+            10,
+            "digits"
+          );
+        }
+
+        score = Math.min(100, score);
+
+        return {
+          score: score,
+          findings: findings,
+          host: host,
+          baseDomain: baseDomain
+        };
+      }
+                     }
+
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          throw new Error("Chỉ hỗ trợ URL bắt đầu bằng http:// hoặc https://.");
+        }
+
+        if (!parsed.hostname || parsed.hostname.indexOf(".") === -1) {
+          if (parsed.hostname !== "localhost") {
+            throw new Error("Tên miền có vẻ chưa đầy đủ. Hãy nhập URL chính xác.");
+          }
+        }
+
+        if (parsed.username || parsed.password) {
+          throw new Error("URL chứa thông tin trước tên miền. Không nên tiếp tục sử dụng URL này.");
+        }
+
+        return parsed;
+      }
+
+      /*
+        THƯ VIỆN NỘI BỘ:
+        Không tạo phần tử giao diện để hiển thị danh sách này.
+        Lưu ý: vì chạy hoàn toàn trên trình duyệt, người xem mã nguồn vẫn có thể đọc được.
+      */
+      var officialDomains = [
+        { brand: "Google", domain: "google.com" },
+        { brand: "YouTube", domain: "youtube.com" },
+        { brand: "Microsoft", domain: "microsoft.com" },
+        { brand: "Apple", domain: "apple.com" },
+        { brand: "Facebook", domain: "facebook.com" },
+        { brand: "Instagram", domain: "instagram.com" },
+        { brand: "Wikipedia", domain: "wikipedia.org" },
+        { brand: "GitHub", domain: "github.com" },
+        { brand: "OpenAI", domain: "openai.com" },
+        { brand: "PayPal", domain: "paypal.com" },
+        { brand: "Amazon", domain: "amazon.com" },
+        { brand: "Netflix", domain: "netflix.com" },
+        { brand: "Zalo", domain: "zalo.me" },
+        { brand: "VnExpress", domain: "vnexpress.net" },
+        { brand: "Cổng Thông tin Chính phủ", domain: "chinhphu.vn" }
+      ];
+
+      function getBaseDomain(host) {
+        var labels = host.split(".");
+        if (labels.length <= 2) return host;
+
+        var twoPartSuffixes = [
+          "com.vn", "net.vn", "org.vn", "gov.vn", "edu.vn",
+          "ac.vn", "co.uk", "org.uk", "com.au", "co.jp",
+          "com.br", "co.nz"
+        ];
+
+        var lastTwo = labels.slice(-2).join(".");
+
+        if (twoPartSuffixes.indexOf(lastTwo) !== -1 && labels.length >= 3) {
+          return labels.slice(-3).join(".");
+        }
+
+        return labels.slice(-2).join(".");
+      }
+
+      function editDistance(a, b) {
+        var previous = [];
+        var current = [];
+        var i, j;
+
+        for (j = 0; j <= b.length; j++) previous[j] = j;
+
+        for (i = 1; i <= a.length; i++) {
+          current[0] = i;
+
+          for (j = 1; j <= b.length; j++) {
+            current[j] = Math.min(
+              current[j - 1] + 1,
+              previous[j] + 1,
+              previous[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)
+            );
+          }
+
+          var temp = previous;
+          previous = current;
+          current = temp;
+        }
+
+        return previous[b.length];
+      }
+
+      function analyzeUrl(parsed) {
+        var findings = [];
+        var score = 0;
+        var hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+        var fullUrl = parsed.href.toLowerCase();
+        var pathAndQuery = (parsed.pathname + parsed.search + parsed.hash).toLowerCase();
+
+        var urlText = (hostname + " " + pathAndQuery)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+        function add(points, icon, title, description) {
+          score += points;
+          findings.push({
+            icon: icon,
+            title: title,
+            description: description
+          });
+        }
+
+        if (parsed.protocol === "http:") {
+          add(12, "⚠️", "Sử dụng HTTP",
+            "Kết nối không dùng HTTPS. Đây là điểm cần thận trọng, nhưng riêng HTTP không chứng minh website độc hại.");
+        } else {
+          add(0, "🔒", "Sử dụng HTTPS",
+            "HTTPS bảo vệ kết nối nhưng không xác nhận nội dung hoặc chủ sở hữu website.");
+        }
+
+        if (hostname.indexOf("xn--") !== -1) {
+          add(22, "🌐", "Tên miền dùng Punycode",
+            "Tên miền có nhãn xn-- được mã hóa. Một số tên miền quốc tế hợp pháp cũng dùng dạng này; hãy kiểm tra kỹ ký tự hiển thị.");
+        }
+
+        if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
+          add(18, "🧭", "Dùng địa chỉ IPv4 trực tiếp",
+            "URL dùng địa chỉ IP thay vì tên miền thông thường. Đây là dấu hiệu cần xem xét, không phải bằng chứng độc hại.");
+        }
+
+        var shorteners = [
+          "bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly",
+          "rb.gy", "rebrand.ly", "ow.ly", "buff.ly", "shorturl.at"
+        ];
+
+        if (shorteners.indexOf(hostname) !== -1) {
+          add(12, "↗️", "Dịch vụ rút gọn URL",
+            "Đích đến thật có thể bị che khuất. Chỉ tiếp tục nếu bạn tin tưởng nguồn gửi và có thể xác minh đích đến.");
+        }
+
+        var suspiciousTlds = [
+          ".zip", ".mov", ".click", ".top", ".xyz",
+          ".work", ".country", ".gq", ".tk", ".rest"
+        ];
+
+        if (suspiciousTlds.some(function (tld) {
+          return hostname.endsWith(tld);
+        })) {
+          add(8, "🔎", "Đuôi tên miền cần xem xét",
+            "Đuôi tên miền này có thể xuất hiện trong liên kết rủi ro, nhưng bản thân đuôi miền không đủ để kết luận độc hại.");
+        }
+
+        var categoryRules = [
+          {
+            label: "cá cược / cờ bạc",
+            regex: /(^|[^a-z0-9])(casino|betting|sportsbook|poker|slot[-_ ]?game|gambling|wager|ca[-_ ]?cuoc|caocuoc|so[-_ ]?de|xoc[-_ ]?dia|tai[-_ ]?xiu)([^a-z0-9]|$)/i
+          },
+          {
+            label: "nội dung người lớn",
+            regex: /(^|[^a-z0-9])(porn|xxx|adult[-_ ]?content|sex[-_ ]?video|webcam[-_ ]?sex|phim[-_ ]?sex|khieu dam|18plus)([^a-z0-9]|$)/i
+          },
+          {
+            label: "lừa đảo / giả mạo",
+            regex: /(^|[^a-z0-9])(phishing|scam|fraud|fake[-_ ]?login|steal[-_ ]?password|xac[-_ ]?minh[-_ ]?tai[-_ ]?khoan|nhan[-_ ]?qua|trung[-_ ]?thuong|claim[-_ ]?prize)([^a-z0-9]|$)/i
+          }
+        ];
+
+        categoryRules.forEach(function (rule) {
+          if (rule.regex.test(urlText)) {
+            add(18, "🚩", "Từ khóa có thể liên quan đến " + rule.label,
+              "URL có chứa mẫu từ khóa đáng chú ý. Từ khóa cũng có thể xuất hiện trong nội dung hợp pháp; cần kiểm tra thêm.");
+          }
+        });
+
+        var suspiciousWords = [
+          "login", "verify", "verification", "password", "signin",
+          "account", "secure", "update", "wallet", "banking",
+          "gift", "prize", "free", "claim", "urgent", "confirm",
+          "reset", "credential", "payment"
+        ];
+
+        var matchedWords = suspiciousWords.filter(function (word) {
+          return pathAndQuery.indexOf(word) !== -1;
+        });
+
+        if (matchedWords.length > 0) {
+          add(Math.min(16, matchedWords.length * 4), "🔑",
+            "Có từ khóa thường gặp trong URL lừa đảo",
+            "Phát hiện từ khóa: " + matchedWords.join(", ") +
+            ". Các từ này cũng có thể xuất hiện trên website hợp pháp; cần kiểm tra ngữ cảnh.");
+        }
+
+        if (hostname.split(".").length >= 5) {
+          add(8, "🧩", "Tên miền có nhiều cấp",
+            "Tên miền có nhiều cấp phụ. Hãy xác định tên miền đăng ký thực tế, không chỉ dựa vào phần đầu của địa chỉ.");
+        }
+
+        if (hostname.length > 45) {
+          add(8, "📏", "Tên miền dài bất thường",
+            "Tên miền dài có thể gây khó nhận diện hoặc được dùng để bắt chước tên miền khác.");
+        }
+
+        if (fullUrl.length > 180) {
+          add(4, "🧵", "URL rất dài",
+            "URL dài có thể chứa nhiều tham số khó đọc. Tránh chia sẻ URL có token hoặc mã phiên.");
+        }
+
+        if (parsed.search.length > 100) {
+          add(4, "🔗", "Chuỗi tham số dài",
+            "URL có chuỗi tham số dài. Không chia sẻ URL chứa token hoặc thông tin riêng tư.");
+        }
+
+        // Đối chiếu tên miền và dò dấu hiệu giả mạo.
+        // Không hiển thị thư viện này ra giao diện.
+        var baseDomain = getBaseDomain(hostname);
+        var exactMatch = null;
+        var possibleImpersonation = null;
+
+        officialDomains.forEach(function (entry) {
+          if (hostname === entry.domain || hostname.endsWith("." + entry.domain)) {
+            exactMatch = entry;
+            return;
+          }
+
+          var officialBase = getBaseDomain(entry.domain);
+          var baseLabel = baseDomain.split(".")[0];
+          var officialLabel = officialBase.split(".")[0];
+
+          var distance = editDistance(baseLabel, officialLabel);
+          var brandToken = entry.brand.toLowerCase().replace(/[^a-z0-9]/g, "");
+          var hostToken = hostname.replace(/[^a-z0-9]/g, "");
+
+          var brandMentioned =
+            hostToken.indexOf(brandToken) !== -1 ||
+            hostname.indexOf(officialLabel) !== -1;
+
+          var similarDomain = distance > 0 && distance <= 2 &&
+            Math.min(baseLabel.length, officialLabel.length) >= 4;
+
+          if (similarDomain || (brandMentioned && baseDomain !== officialBase)) {
+            if (!possibleImpersonation ||
+                distance < possibleImpersonation.distance) {
+              possibleImpersonation = {
+                brand: entry.brand,
+                domain: entry.domain,
+                distance: distance
+              };
+            }
+          }
+        });
+
+        if (exactMatch) {
+          add(0, "📚", "Khớp tên miền trong dữ liệu tham khảo",
+            "Tên miền khớp một miền tham khảo đã tích hợp. Điều này không chứng minh mọi trang con hoặc nội dung trên đó an toàn.");
+        } else if (possibleImpersonation) {
+          add(28, "🛡️", "Có dấu hiệu giả mạo tên miền",
+            "Tên miền giống hoặc nhắc đến thương hiệu " + possibleImpersonation.brand +
+            " nhưng không khớp tên miền tham khảo " + possibleImpersonation.domain +
+            ". Hãy xác minh địa chỉ qua kênh chính thức trước khi nhập thông tin.");
+        } else {
+          add(0, "📚", "Chưa khớp dữ liệu tham khảo",
+            "Tên miền chưa khớp dữ liệu tham khảo tích hợp. Điều này không tự động có nghĩa là độc hại hoặc an toàn.");
+        }
+
+        if (findings.every(function (finding) {
+          return finding.title === "Sử dụng HTTPS" ||
+            finding.title === "Khớp tên miền trong dữ liệu tham khảo" ||
+            finding.title === "Chưa khớp dữ liệu tham khảo";
+        })) {
+          add(0, "✅", "Chưa thấy dấu hiệu rõ ràng từ URL",
+            "Không phát hiện dấu hiệu phổ biến trong các phép kiểm tra cục bộ. Công cụ chưa kiểm tra nội dung thực tế hoặc danh tiếng URL từ nguồn bên ngoài.");
+        }
+
+        score = Math.max(0, Math.min(100, score));
+
+        var level, title, summary, color;
+
+        if (score >= 60) {
+          level = "RỦI RO CAO";
+          title = "Liên kết có nhiều dấu hiệu đáng ngờ";
+          summary = "Không nên mở liên kết hoặc nhập thông tin cá nhân trước khi xác minh nguồn.";
+          color = "#ff657c";
+        } else if (score >= 30) {
+          level = "CẦN THẬN TRỌNG";
+          title = "Phát hiện một số dấu hiệu cần xem xét";
+          summary = "Hãy xác minh tên miền qua kênh chính thức trước khi tiếp tục.";
+          color = "#ffca68";
+        } else {
+          level = "RỦI RO THẤP THEO PHÂN TÍCH CỤC BỘ";
+          title = "Ít dấu hiệu đáng ngờ được phát hiện";
+          summary = "Đây không phải xác nhận website an toàn; nội dung độc hại có thể không thể hiện trong URL.";
+          color = "#5ce1a0";
+        }
+
+        return {
+          score: score,
+          level: level,
+          title: title,
+          summary: summary,
+          color: color,
+          findings: findings,
+          url: parsed.href
+        };
+      }
+                       function renderResult(result) {
+        var panel = getElement("resultPanel");
+        var circle = getElement("scoreCircle");
+        var tag = getElement("riskTag");
+        var list = getElement("detailList");
+
+        setText("score", result.score);
+        setText("resultTitle", result.title);
+        setText("resultSummary", result.summary);
+        setText("checkedUrl", result.url);
+
+        if (tag) {
+          tag.textContent = result.level;
+          tag.style.color = result.color;
+          tag.style.backgroundColor = result.color + "20";
+        }
+
+        if (circle) {
+          circle.style.setProperty("--score-color", result.color);
+          circle.style.setProperty("--progress", (result.score * 3.6) + "deg");
+        }
+
+        if (list) {
+          list.replaceChildren();
+
+          result.findings.forEach(function (finding) {
+            var item = document.createElement("div");
+            item.className = "detail-item";
+
+            var icon = document.createElement("div");
+            icon.className = "detail-icon";
+            icon.textContent = finding.icon;
+
+            var content = document.createElement("div");
+            var title = document.createElement("strong");
+            title.textContent = finding.title;
+
+            var description = document.createElement("p");
+            description.textContent = finding.description;
+
+            content.appendChild(title);
+            content.appendChild(description);
+            item.appendChild(icon);
+            item.appendChild(content);
+            list.appendChild(item);
+          });
+        }
+
+        lastReport =
+          "LINKGUARD AI - BÁO CÁO PHÂN TÍCH URL\n" +
+          "URL: " + result.url + "\n" +
+          "Điểm rủi ro heuristic: " + result.score + "/100\n" +
+          "Mức đánh giá: " + result.level + "\n" +
+          "Kết luận: " + result.title + "\n" +
+          "Nhận xét: " + result.summary + "\n\n" +
+          "CHI TIẾT:\n" +
+          result.findings.map(function (finding, index) {
+            return (index + 1) + ". " + finding.title + "\n" + finding.description;
+          }).join("\n\n") +
+          "\n\nLưu ý: Điểm số là heuristic, không phải kết quả xác minh website.";
+
+        if (panel) {
+          panel.classList.add("show");
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      on("scanForm", "submit", function (event) {
+        event.preventDefault();
+
+        var input = getElement("urlInput");
+        var button = getElement("scanButton");
+        var status = getElement("scanStatus");
+
+        if (!input) return;
+
+        if (button) button.disabled = true;
+        if (status) status.textContent = "Đang phân tích cấu trúc URL…";
+
+        try {
+          var parsed = normalizeUrl(input.value);
+          var result = analyzeUrl(parsed);
+
+          renderResult(result);
+
+          if (status) status.textContent = "Đã hoàn tất phân tích cục bộ.";
+        } catch (error) {
+          if (status) {
+            status.textContent = error.message || "Không thể phân tích URL.";
+          }
+
+          var panel = getElement("resultPanel");
+          if (panel) panel.classList.remove("show");
+        } finally {
+          if (button) button.disabled = false;
+        }
+      });
+
+      document.querySelectorAll("[data-example]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var input = getElement("urlInput");
+          var status = getElement("scanStatus");
+
+          if (input) {
+            input.value = button.getAttribute("data-example") || "";
+            input.focus();
+          }
+
+          if (status) {
+            status.textContent = "Đã điền URL mẫu. Nhấn “Phân tích URL” để tiếp tục.";
+          }
+        });
+      });
+
+      on("clearResult", "click", function () {
+        var panel = getElement("resultPanel");
+        var input = getElement("urlInput");
+        var status = getElement("scanStatus");
+
+        if (panel) panel.classList.remove("show");
+        if (input) input.value = "";
+        if (status) status.textContent = "Đã xóa kết quả phân tích.";
+
+        lastReport = "";
+      });
+
+      on("copyReport", "click", async function () {
+        var status = getElement("scanStatus");
+
+        if (!lastReport) {
+          if (status) status.textContent = "Chưa có báo cáo để sao chép.";
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(lastReport);
+
+          if (status) status.textContent = "Đã sao chép báo cáo.";
+        } catch (error) {
+          var area = document.createElement("textarea");
+          area.value = lastReport;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+
+          var copied = false;
+
+          try {
+            copied = document.execCommand("copy");
+          } catch (copyError) {
+            copied = false;
+          }
+
+          area.remove();
+
+          if (status) {
+            status.textContent = copied
+              ? "Đã sao chép báo cáo."
+              : "Không thể tự sao chép. Hãy thử lại trên trang HTTPS.";
+          }
+        }
+      });
+
+      function readReviews() {
+        try {
+          var value = localStorage.getItem(STORAGE_KEY);
+          var reviews = value ? JSON.parse(value) : [];
+          return Array.isArray(reviews) ? reviews : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveReviews(reviews) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function renderReviews() {
+        var list = getElement("reviewList");
+        if (!list) return;
+
+        list.replaceChildren();
+
+        var reviews = readReviews();
+
+        if (reviews.length === 0) {
+          var empty = document.createElement("p");
+          empty.className = "muted small";
+          empty.textContent = "Chưa có đánh giá nào trên trình duyệt này.";
+          list.appendChild(empty);
+          return;
+        }
+
+        reviews.slice().reverse().forEach(function (review) {
+          var card = document.createElement("article");
+          card.className = "review";
+
+          var header = document.createElement("div");
+          header.className = "review-header";
+
+          var name = document.createElement("strong");
+          name.textContent = review.name || "Người dùng";
+
+          var stars = document.createElement("span");
+          stars.className = "stars";
+
+          var rating = Math.max(1, Math.min(5, Number(review.rating) || 5));
+          stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+
+          header.appendChild(name);
+          header.appendChild(stars);
+
+          var message = document.createElement("p");
+          message.textContent = review.text;
+
+          var date = document.createElement("div");
+          date.className = "muted small";
+          date.style.marginTop = "8px";
+          date.textContent = review.date || "";
+
+          card.appendChild(header);
+          card.appendChild(message);
+          card.appendChild(date);
+          list.appendChild(card);
+        });
+      }
+
+      on("reviewForm", "submit", function (event) {
+        event.preventDefault();
+
+        var nameInput = getElement("reviewName");
+        var ratingInput = getElement("reviewRating");
+        var textInput = getElement("reviewText");
+        var status = getElement("reviewStatus");
+
+        if (!nameInput || !ratingInput || !textInput) return;
+
+        var message = textInput.value.trim();
+
+        if (!message) {
+          if (status) status.textContent = "Vui lòng nhập nội dung đánh giá.";
+          textInput.focus();
+          return;
+        }
+
+        var reviews = readReviews();
+
+        reviews.push({
+          name: nameInput.value.trim().slice(0, 40) || "Người dùng",
+          rating: Number(ratingInput.value),
+          text: message.slice(0, 500),
+          date: new Date().toLocaleString("vi-VN")
+        });
+
+        if (!saveReviews(reviews)) {
+          if (status) {
+            status.textContent = "Không thể lưu đánh giá. Hãy kiểm tra cài đặt lưu trữ của trình duyệt.";
+          }
+          return;
+        }
+
+        textInput.value = "";
+
+        if (status) status.textContent = "Đã lưu đánh giá trên thiết bị này.";
+
+        renderReviews();
+      });
+
+      on("clearReviews", "click", function () {
+        var status = getElement("reviewStatus");
+
+        if (!window.confirm("Bạn có chắc muốn xóa tất cả đánh giá được lưu trên trình duyệt này?")) {
+          return;
+        }
+
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          renderReviews();
+
+          if (status) status.textContent = "Đã xóa đánh giá trên thiết bị này.";
+        } catch (error) {
+          if (status) status.textContent = "Không thể xóa dữ liệu lưu trữ.";
+        }
+      });
+
+      renderReviews();
+
+      console.info("[LINKGUARD AI] Khởi tạo thành công.");
+    })();
+  </script>
+</body>
+</html>
